@@ -1,6 +1,6 @@
 'use client'
 
-import { Lead, LeadStatus } from '@/types'
+import { Lead } from '@/types'
 import {
   Table,
   TableBody,
@@ -10,29 +10,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { MessageCircle } from 'lucide-react'
-
-const STATUS_LABELS: Record<LeadStatus, string> = {
-  novo: 'Novo',
-  em_atendimento: 'Em Atendimento',
-  visita: 'Visita',
-  fechado: 'Fechado',
-}
-
-const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
-  novo: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400',
-  em_atendimento:
-    'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400',
-  visita:
-    'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400',
-  fechado:
-    'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400',
-}
-
-function formatStatus(status: LeadStatus) {
-  return STATUS_LABELS[status] ?? status
-}
+import { StatusBadgeSelect } from '@/components/status-badge-select'
 
 function formatPhone(whatsapp: string) {
   const digits = whatsapp.replace(/\D/g, '')
@@ -80,12 +59,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
             <TableCell>{formatPhone(lead.whatsapp)}</TableCell>
             <TableCell>{lead.email ?? <EmptyCell />}</TableCell>
             <TableCell>
-              <Badge
-                variant="outline"
-                className={STATUS_BADGE_CLASSES[lead.status]}
-              >
-                {formatStatus(lead.status)}
-              </Badge>
+              <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} />
             </TableCell>
             <TableCell>{lead.interesse ?? <EmptyCell />}</TableCell>
             <TableCell>
