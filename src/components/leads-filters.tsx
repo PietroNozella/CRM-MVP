@@ -80,6 +80,7 @@ export function LeadsFilters({
           type="date"
           value={dataInicio}
           onChange={(e) => setDataInicio(e.target.value)}
+          className="pr-8 [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
       </div>
       <div className="w-[150px]">
@@ -88,6 +89,7 @@ export function LeadsFilters({
           type="date"
           value={dataFim}
           onChange={(e) => setDataFim(e.target.value)}
+          className="pr-8 [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
       </div>
       <div className="flex gap-2">
