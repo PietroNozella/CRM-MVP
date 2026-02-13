@@ -74,22 +74,22 @@ export function LeadsFilters({
           </SelectContent>
         </Select>
       </div>
-      <div className="w-[150px]">
+      <div className="w-[165px] relative">
         <label className="text-sm font-medium mb-2 block">Data início</label>
         <Input
           type="date"
           value={dataInicio}
           onChange={(e) => setDataInicio(e.target.value)}
-          className="pr-8 [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+          className="relative pr-10 w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
       </div>
-      <div className="w-[150px]">
+      <div className="w-[165px]">
         <label className="text-sm font-medium mb-2 block">Data fim</label>
         <Input
           type="date"
           value={dataFim}
           onChange={(e) => setDataFim(e.target.value)}
-          className="pr-8 [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+          className="relative pr-10 w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
       </div>
       <div className="flex gap-2">
