@@ -24,12 +24,19 @@ function formatPhone(whatsapp: string) {
   return whatsapp
 }
 
+function whatsappPhoneUrl(whatsapp: string) {
+  const digits = whatsapp.replace(/\D/g, '')
+  const numero = digits.startsWith('55') ? digits : `55${digits}`
+  return `https://wa.me/${numero}`
+}
+
 function whatsappUrl(lead: Lead) {
   const numero = lead.whatsapp.replace(/\D/g, '')
+  const fullNumero = numero.startsWith('55') ? numero : `55${numero}`
   const msg = encodeURIComponent(
     `Olá ${lead.nome}, vi seu interesse em um imóvel e gostaria de conversar!`
   )
-  return `https://wa.me/${numero}?text=${msg}`
+  return `https://wa.me/${fullNumero}?text=${msg}`
 }
 
 function EmptyCell() {
@@ -49,6 +56,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
           <TableHead>Status</TableHead>
           <TableHead>Interesse</TableHead>
           <TableHead>Valor Máx.</TableHead>
+          <TableHead>Origem</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
@@ -56,7 +64,16 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         {leads.map((lead) => (
           <TableRow key={lead.id}>
             <TableCell>{lead.nome}</TableCell>
-            <TableCell>{formatPhone(lead.whatsapp)}</TableCell>
+            <TableCell>
+              <a
+                href={whatsappPhoneUrl(lead.whatsapp)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                {formatPhone(lead.whatsapp)}
+              </a>
+            </TableCell>
             <TableCell>{lead.email ?? <EmptyCell />}</TableCell>
             <TableCell>
               <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} />
@@ -69,6 +86,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                 <EmptyCell />
               )}
             </TableCell>
+            <TableCell>{lead.source ?? <EmptyCell />}</TableCell>
             <TableCell>
               <Button size="sm" variant="outline" asChild>
                 <a

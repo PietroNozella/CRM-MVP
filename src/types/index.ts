@@ -8,6 +8,7 @@ export interface Lead {
   status: LeadStatus
   interesse: string | null
   valor_maximo: number | null
+  source: string | null
   created_at: string
 }
 
