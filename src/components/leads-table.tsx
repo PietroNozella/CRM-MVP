@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MessageCircle } from 'lucide-react'
+import Link from 'next/link'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
 import { whatsappMessage } from '@/lib/site'
 
@@ -91,7 +92,14 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
       <TableBody>
         {leads.map((lead) => (
           <TableRow key={lead.id}>
-            <TableCell>{lead.nome}</TableCell>
+            <TableCell>
+              <Link
+                href={`/leads/${lead.id}`}
+                className="text-primary hover:underline font-medium"
+              >
+                {lead.nome}
+              </Link>
+            </TableCell>
             <TableCell>
               <a
                 href={whatsappPhoneUrl(lead.whatsapp)}

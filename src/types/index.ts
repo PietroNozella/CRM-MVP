@@ -14,6 +14,13 @@ export interface Lead {
   created_at: string
 }
 
+export interface Note {
+  id: string
+  lead_id: string
+  texto: string
+  created_at: string
+}
+
 export interface Imovel {
   id: string
   titulo: string
