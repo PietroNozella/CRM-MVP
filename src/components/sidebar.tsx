@@ -3,13 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Users, UserPlus } from 'lucide-react'
+import { LayoutDashboard, Users, UserPlus, Upload } from 'lucide-react'
 import { SITE_NAME } from '@/lib/site'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/leads', label: 'Contatos', icon: Users },
   { href: '/leads/novo', label: 'Novo Contato', icon: UserPlus },
+  { href: '/leads/importar', label: 'Importar', icon: Upload },
 ]
 
 export function Sidebar() {
