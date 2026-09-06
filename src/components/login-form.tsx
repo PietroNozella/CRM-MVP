@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { SITE_NAME } from '@/lib/site'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Brand, PrumoMark } from '@/components/brand'
 
 export function LoginForm() {
   const router = useRouter()
@@ -36,15 +35,30 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex items-center justify-center py-10">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>{SITE_NAME}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={onSubmit} className="space-y-4">
+    <div className="grid min-h-[calc(100dvh-4.5rem)] overflow-hidden rounded-lg border bg-card shadow-[0_20px_60px_rgba(24,32,27,0.08)] lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="relative hidden min-h-[640px] overflow-hidden bg-[#18201B] p-10 text-[#F4F1E9] lg:flex lg:flex-col lg:justify-between xl:p-14">
+        <Brand className="relative z-10" />
+        <div aria-hidden="true" className="absolute bottom-0 left-1/2 top-0 w-px bg-white/15">
+          <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[#E65A2F]" />
+          <span className="absolute bottom-14 left-1/2 -translate-x-1/2"><PrumoMark className="h-16 w-16 text-[#E65A2F]" /></span>
+        </div>
+        <div className="relative z-10 max-w-md">
+          <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-white/45">Sistema de relacionamento</p>
+          <h1 className="mt-5 text-5xl font-medium leading-[0.98] tracking-[-0.055em] xl:text-6xl">
+            Organize contatos.<br />Mantenha o próximo passo à vista.
+          </h1>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-center p-6 sm:p-10 lg:p-14">
+        <div className="w-full max-w-sm">
+          <Brand className="mb-14 text-primary lg:hidden" />
+          <p className="eyebrow">Acesso seguro</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Entre no PRUMO</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Retome sua agenda e continue as conversas importantes.</p>
+          <form onSubmit={onSubmit} className="mt-9 space-y-5">
             <div>
-              <label htmlFor="login-email" className="text-sm font-medium mb-2 block">Email</label>
+              <label htmlFor="login-email" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Email</label>
               <Input
                 id="login-email"
                 name="email"
@@ -58,7 +72,7 @@ export function LoginForm() {
               />
             </div>
             <div>
-              <label htmlFor="login-password" className="text-sm font-medium mb-2 block">Senha</label>
+              <label htmlFor="login-password" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Senha</label>
               <Input
                 id="login-password"
                 name="password"
@@ -68,15 +82,15 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button type="button" variant="ghost" aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)} className="mt-1 px-0">{showPassword ? 'Ocultar senha' : 'Mostrar senha'}</Button>
+              <Button type="button" variant="link" aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)} className="mt-1 h-auto min-h-0 px-0 py-2 text-xs">{showPassword ? 'Ocultar senha' : 'Mostrar senha'}</Button>
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     </div>
   )
 }

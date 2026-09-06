@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 
 interface DashboardStats {
@@ -19,19 +17,19 @@ export function DashboardCards({ stats }: { stats: DashboardStats }) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-      {cards.map(({ label, value, href }) => (
-        <Card key={label}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{label}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{value}</div>
-            <Button variant="link" className="h-auto p-0 mt-2" asChild>
-              <Link href={href}>Ver todos</Link>
-            </Button>
-          </CardContent>
-        </Card>
+    <div className="mt-5 overflow-hidden rounded-lg border border-border bg-card md:grid md:grid-cols-5">
+      {cards.map(({ label, value, href }, index) => (
+        <Link
+          key={label}
+          href={href}
+          className="group flex min-h-28 items-end justify-between gap-4 border-b border-border p-4 transition-colors hover:bg-secondary/60 md:block md:border-b-0 md:border-r md:p-5 md:last:border-r-0"
+        >
+          <div>
+            <p className="section-index">{String(index + 1).padStart(2, '0')}</p>
+            <p className="mt-2 text-sm font-medium text-muted-foreground group-hover:text-foreground">{label}</p>
+          </div>
+          <p className="metric-number text-3xl font-medium md:mt-5 md:text-4xl">{value}</p>
+        </Link>
       ))}
     </div>
   )

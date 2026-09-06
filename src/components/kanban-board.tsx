@@ -95,22 +95,22 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
 
   return (
     <div>
-      <div className="min-h-6 mb-2">
-        <p role="status" className="text-sm text-muted-foreground">{saving ? 'Salvando etapa…' : message}</p>
+      <div className="mb-3 min-h-6 font-mono text-xs">
+        <p role="status" className="text-muted-foreground">{saving ? 'Salvando etapa…' : message}</p>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
-      <div className="mb-4 md:hidden">
-        <label htmlFor="etapa-visivel" className="mb-2 block text-sm font-medium">Ver etapa</label>
+      <div className="mb-4 rounded-lg border bg-card p-4 md:hidden">
+        <label htmlFor="etapa-visivel" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Ver etapa</label>
         <Select value={activeStage} onValueChange={value => setActiveStage(value as LeadStatus)} disabled={saving}>
           <SelectTrigger id="etapa-visivel"><SelectValue /></SelectTrigger>
           <SelectContent>{LEAD_STATUSES.map(stage => <SelectItem key={stage.value} value={stage.value}>{stage.label} ({board[stage.value].length})</SelectItem>)}</SelectContent>
         </Select>
       </div>
-      <div className="md:flex gap-4 md:overflow-x-auto pb-4">
-        {LEAD_STATUSES.map((s) => (
+      <div className="gap-4 pb-4 md:flex md:overflow-x-auto">
+        {LEAD_STATUSES.map((s, stageIndex) => (
           <div
             key={s.value}
-            className={`${s.value === activeStage ? 'block' : 'hidden'} md:block w-full md:w-64 shrink-0 rounded-lg bg-muted/50 p-3`}
+            className={`${s.value === activeStage ? 'block' : 'hidden'} w-full shrink-0 border-t-2 bg-secondary/40 p-3 md:block md:w-72 ${stageIndex === 0 ? 'border-t-[#2F6B4F]' : stageIndex === 1 ? 'border-t-[#2E5F89]' : stageIndex === 2 ? 'border-t-[#B56C1B]' : 'border-t-[#626761]'}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault()
@@ -118,9 +118,12 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               setDragId(null)
             }}
           >
-            <div className="flex justify-between items-center mb-3 px-1">
-              <h2 ref={node => { headings.current[s.value] = node }} tabIndex={-1} className="rounded text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{s.label}</h2>
-              <span className="text-xs text-muted-foreground">
+            <div className="mb-3 flex items-end justify-between border-b px-1 pb-3">
+              <div>
+                <p className="section-index">{String(stageIndex + 1).padStart(2, '0')} / ETAPA</p>
+                <h2 ref={node => { headings.current[s.value] = node }} tabIndex={-1} className="mt-1 rounded text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{s.label}</h2>
+              </div>
+              <span className="metric-number text-2xl text-muted-foreground">
                 {board[s.value].length}
               </span>
             </div>
@@ -131,14 +134,14 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                   draggable={!saving}
                   onDragStart={() => setDragId(lead.id)}
                   onDragEnd={() => setDragId(null)}
-                  className={`md:cursor-grab md:active:cursor-grabbing ${
-                    dragId === lead.id ? 'opacity-50' : ''
+                  className={`border-l-2 border-l-primary md:cursor-grab md:active:cursor-grabbing ${
+                    dragId === lead.id ? 'scale-[0.98] opacity-50' : ''
                   }`}
                 >
-                  <CardContent className="pt-3 pb-3">
+                  <CardContent className="pb-3 pt-3">
                     <Link
                       href={`/leads/${lead.id}`}
-                      className="block break-words text-sm font-medium hover:underline"
+                      className="block break-words text-sm font-semibold hover:underline"
                       draggable={false}
                       onDragStart={(e) => e.preventDefault()}
                     >

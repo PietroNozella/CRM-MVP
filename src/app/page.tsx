@@ -3,6 +3,7 @@ import { DashboardCards } from '@/components/dashboard-cards'
 import { DashboardMetrics } from '@/components/dashboard-metrics'
 import { WhoToCall } from '@/components/who-to-call'
 import { todayISO } from '@/lib/dates'
+import { PageHeader } from '@/components/page-header'
 
 const CALL_COLS =
   'id,nome,whatsapp,status,proximo_retorno,nota_retorno'
@@ -55,8 +56,11 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Hoje</h1>
-      <p className="mb-6 mt-1 text-sm text-muted-foreground">Veja quem precisa de retorno e continue o atendimento.</p>
+      <PageHeader
+        index="01"
+        title="Hoje"
+        description="Priorize retornos, preserve o contexto e mantenha cada conversa em movimento."
+      />
       <WhoToCall
         overdue={overdueRes.data ?? []}
         today={todayRes.data ?? []}
@@ -65,8 +69,8 @@ export default async function DashboardPage() {
         hasAny={stats.total > 0}
       />
       <DashboardCards stats={stats} />
-      <details className="mt-6">
-        <summary className="flex min-h-11 cursor-pointer items-center font-medium">
+      <details className="mt-8 border-t border-border pt-4">
+        <summary className="flex min-h-11 cursor-pointer items-center font-mono text-xs font-medium uppercase tracking-[0.12em]">
           Ver resultados e origens
         </summary>
         <DashboardMetrics leads={leads ?? []} />

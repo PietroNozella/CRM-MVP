@@ -1,9 +1,11 @@
 ﻿import { CsvImport } from '@/components/csv-import'
 
+import { PageHeader } from '@/components/page-header'
+
 export default function ImportarPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Importar Contatos</h1>
+      <PageHeader index="05" title="Importar contatos" description="Traga sua base, confirme o mapeamento e continue de onde parou." />
       <CsvImport />
     </div>
   )

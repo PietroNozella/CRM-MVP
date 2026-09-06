@@ -15,13 +15,13 @@ import {
 import { cn } from '@/lib/utils'
 
 const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
-  novo: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400',
+  novo: 'border-[#A7C7B6] bg-[#E1EEE6] text-[#244C3D]',
   em_atendimento:
-    'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400',
+    'border-[#ADC7D8] bg-[#E3EEF4] text-[#274E69]',
   em_negociacao:
-    'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400',
+    'border-[#DAB98B] bg-[#F3E8D3] text-[#7A4A12]',
   fechado:
-    'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400',
+    'border-[#CBC8BE] bg-[#EAE6DC] text-[#555C57]',
 }
 
 export function StatusBadgeSelect({
@@ -62,7 +62,7 @@ export function StatusBadgeSelect({
       <SelectTrigger
         aria-label={leadName ? `Etapa de ${leadName}` : 'Etapa do contato'}
         className={cn(
-          'min-h-11 min-w-0 px-3 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'min-h-11 min-w-0 px-3 font-mono text-[0.68rem] uppercase tracking-[0.06em] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           STATUS_BADGE_CLASSES[currentStatus]
         )}
       >

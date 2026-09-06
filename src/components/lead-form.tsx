@@ -85,153 +85,48 @@ export function LeadForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-md space-y-4"
-      >
-        <FormField
-          control={form.control}
-          name="nome"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="whatsapp"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>WhatsApp</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="(11) 99999-9999"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="proximo_retorno"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Próximo retorno (opcional)</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="nota_retorno"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nota do retorno (opcional)</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Ex: Ligar para confirmar orçamento" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email (opcional)</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="interesse"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Interesse / serviço (opcional)</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Ex: Corte + barba, revisão, orçamento" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="valor_maximo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Valor (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Etapa</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {LEAD_STATUSES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {form.formState.errors.root && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.root.message}
-          </p>
-        )}
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? 'Salvando...' : 'Salvar contato'}
-        </Button>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+        <section className="rounded-lg border bg-card p-5 md:p-6">
+          <p className="section-index">01 / DADOS</p>
+          <h2 className="mt-2 text-lg font-semibold">Informações principais</h2>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+            <FormField control={form.control} name="nome" render={({ field }) => (
+              <FormItem><FormLabel>Nome</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="whatsapp" render={({ field }) => (
+              <FormItem><FormLabel>WhatsApp</FormLabel><FormControl><Input {...field} type="tel" inputMode="tel" autoComplete="tel" placeholder="(11) 99999-9999" /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem><FormLabel>Email (opcional)</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="interesse" render={({ field }) => (
+              <FormItem><FormLabel>Interesse / serviço (opcional)</FormLabel><FormControl><Input {...field} placeholder="Ex: Corte + barba, revisão, orçamento" /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="valor_maximo" render={({ field }) => (
+              <FormItem><FormLabel>Valor (opcional)</FormLabel><FormControl><Input type="number" inputMode="decimal" step="0.01" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)} /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-t-2 border-t-accent bg-card p-5 md:p-6 lg:sticky lg:top-6">
+          <p className="section-index">02 / DIREÇÃO</p>
+          <h2 className="mt-2 text-lg font-semibold">Próximo passo</h2>
+          <div className="mt-6 space-y-5">
+            <FormField control={form.control} name="status" render={({ field }) => (
+              <FormItem><FormLabel>Etapa</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent>{LEAD_STATUSES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="proximo_retorno" render={({ field }) => (
+              <FormItem><FormLabel>Próximo retorno (opcional)</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="nota_retorno" render={({ field }) => (
+              <FormItem><FormLabel>Nota do retorno (opcional)</FormLabel><FormControl><Input {...field} placeholder="Ex: Confirmar orçamento" /></FormControl><FormMessage /></FormItem>
+            )} />
+            {form.formState.errors.root && <p role="alert" className="text-sm text-destructive">{form.formState.errors.root.message}</p>}
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? 'Salvando...' : 'Salvar contato'}
+            </Button>
+          </div>
+        </section>
       </form>
     </Form>
   )

@@ -2,7 +2,7 @@
 // NEXT_PUBLIC_APP_NAME: nome exibido no menu e no titulo do site.
 // NEXT_PUBLIC_WHATSAPP_TEMPLATE: mensagem do botao Chamar, use {nome}.
 
-export const SITE_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'CRM'
+export const SITE_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'PRUMO'
 
 export function whatsappMessage(nome: string) {
   const template = process.env.NEXT_PUBLIC_WHATSAPP_TEMPLATE

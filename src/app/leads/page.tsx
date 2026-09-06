@@ -7,6 +7,8 @@ import { todayISO, dayStartUTC, nextDayStartUTC } from '@/lib/dates'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/page-header'
+import { Plus } from 'lucide-react'
 
 const VALID_STATUS = new Set(LEAD_STATUSES.map((s) => s.value))
 
@@ -98,10 +100,12 @@ export default async function LeadsPage({
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Contatos</h1>
-        <Button asChild><Link href="/leads/novo">Novo contato</Link></Button>
-      </div>
+      <PageHeader
+        index="02"
+        title="Contatos"
+        description="Toda relação comercial, com contexto e próximo passo visíveis."
+        actions={<Button asChild><Link href="/leads/novo"><Plus aria-hidden="true" />Novo contato</Link></Button>}
+      />
       <LeadsFilters
         key={`${params.q ?? ''}-${params.status ?? ''}-${params.data_inicio ?? ''}-${params.data_fim ?? ''}-${params.retorno ?? ''}`}
         initialQ={typeof params.q === 'string' ? params.q : ''}
@@ -110,14 +114,14 @@ export default async function LeadsPage({
         initialDataFim={typeof params.data_fim === 'string' ? params.data_fim : ''}
         initialRetorno={typeof params.retorno === 'string' ? params.retorno : 'todos'}
       />
-      <p className="mb-3 text-sm text-muted-foreground" role="status">{total === 0 ? 'Nenhum resultado' : `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} de ${total} contatos`}</p>
-      <div className="hidden md:block">
+      <p className="mb-3 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground" role="status">{total === 0 ? 'Nenhum resultado' : `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} de ${total} contatos`}</p>
+      <div className="hidden overflow-hidden rounded-lg border bg-card md:block">
         <LeadsTable leads={leads ?? []} />
       </div>
       <LeadsCards leads={leads ?? []} />
-      {pages > 1 && <nav aria-label="Páginas de contatos" className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      {pages > 1 && <nav aria-label="Páginas de contatos" className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-5">
         {page > 1 ? <Button asChild variant="outline"><Link href={pageHref(page - 1)}>Anterior</Link></Button> : <Button disabled variant="outline">Anterior</Button>}
-        <span className="text-sm text-muted-foreground">Página {page} de {pages}</span>
+        <span className="font-mono text-xs text-muted-foreground">Página {page} de {pages}</span>
         {page < pages ? <Button asChild variant="outline"><Link href={pageHref(page + 1)}>Próxima</Link></Button> : <Button disabled variant="outline">Próxima</Button>}
       </nav>}
     </div>

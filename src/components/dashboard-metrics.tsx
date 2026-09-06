@@ -28,10 +28,11 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
     .slice(0, 5)
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 mt-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">
+    <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <Card className="border-t-2 border-t-primary">
+        <CardHeader className="border-b">
+          <p className="section-index">01 / CONVERSÃO</p>
+          <CardTitle className="mt-2 text-sm font-semibold">
             Contatos fechados — {pct(fechados, total)} ({fechados}/{total})
           </CardTitle>
         </CardHeader>
@@ -42,11 +43,11 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
               <div key={s.value}>
                 <div className="flex justify-between text-sm mb-1">
                   <span>{s.label}</span>
-                  <span className="text-muted-foreground">
+                  <span className="font-mono text-xs text-muted-foreground">
                     {count} · {pct(count, total)}
                   </span>
                 </div>
-                <div className="h-2 rounded bg-secondary overflow-hidden">
+                <div className="h-1.5 overflow-hidden bg-secondary">
                   <div
                     className="h-full bg-primary"
                     style={{ width: pct(count, total) }}
@@ -58,9 +59,10 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">
+      <Card className="border-t-2 border-t-accent">
+        <CardHeader className="border-b">
+          <p className="section-index">02 / AQUISIÇÃO</p>
+          <CardTitle className="mt-2 text-sm font-semibold">
             Origens (top 5)
           </CardTitle>
         </CardHeader>
@@ -70,9 +72,9 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
           ) : (
             <div className="space-y-2">
               {origins.map(([name, v]) => (
-                <div key={name} className="flex justify-between text-sm">
+                <div key={name} className="flex justify-between border-b py-2 text-sm last:border-b-0">
                   <span className="truncate">{name}</span>
-                  <span className="text-muted-foreground ml-4 shrink-0">
+                  <span className="ml-4 shrink-0 font-mono text-xs text-muted-foreground">
                     {v.total} · {pct(v.fechados, v.total)} fech.
                   </span>
                 </div>

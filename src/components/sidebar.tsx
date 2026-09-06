@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Users, UserPlus, Upload, SquareKanban, LogOut } from 'lucide-react'
+import { LayoutDashboard, Users, UserPlus, Upload, SquareKanban, LogOut, Menu } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { SITE_NAME } from '@/lib/site'
+import { Brand } from '@/components/brand'
 
 const nav = [
   { href: '/', label: 'Hoje', icon: LayoutDashboard },
@@ -50,49 +50,63 @@ export function Sidebar() {
 
   if (pathname === '/login') return null
 
+  function isActive(href: string) {
+    return pathname === href || (href === '/leads' && /^\/leads\/[0-9a-f-]+$/i.test(pathname))
+  }
+
   return (
-    <aside className="w-full border-b bg-card p-3 md:w-64 md:shrink-0 md:border-b-0 md:border-r md:p-4 flex flex-col gap-2">
-      <h2 className="font-semibold text-lg px-3 mb-2 md:mb-4">{SITE_NAME}</h2>
-      <nav aria-label="Navegação principal" className="grid grid-cols-3 gap-1 md:flex md:flex-col md:gap-2">
-      {nav.map(({ href, label, icon: Icon }, index) => (
-        <Button
-          key={href}
-          variant={(pathname === href || (href === '/leads' && /^\/leads\/[0-9a-f-]+$/i.test(pathname))) ? 'secondary' : 'ghost'}
-          asChild
-          className={`${index > 2 ? 'hidden md:inline-flex' : ''} min-h-11 px-2 md:justify-start`}
-          aria-current={pathname === href ? 'page' : undefined}
-        >
-          <Link href={href}>
-            <Icon aria-hidden="true" className="h-4 w-4" />
-            {label}
-          </Link>
-        </Button>
-      ))}
-      </nav>
-      <div className="mt-auto pt-4 border-t hidden md:block">
-        {email && (
-          <p className="text-xs text-muted-foreground px-3 mb-2 truncate">
-            {email}
-          </p>
-        )}
-        <Button variant="ghost" onClick={onLogout} disabled={signingOut} className="justify-start w-full">
-          <LogOut className="mr-2 h-4 w-4" />
-          {signingOut ? 'Saindo…' : 'Sair'}
-        </Button>
+    <aside className="relative z-40 w-full shrink-0 bg-[#18201B] text-[#F4F1E9] md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:flex-col">
+      <div className="flex min-h-16 items-center justify-between border-b border-white/10 px-4 md:min-h-24 md:px-6">
+        <Brand className="text-[#F4F1E9]" />
+        <details ref={moreRef} className="group relative md:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-md border border-white/15 px-3 text-sm font-medium hover:bg-white/10">
+            <Menu aria-hidden="true" className="h-4 w-4" />
+            Menu
+          </summary>
+          <nav aria-label="Navegação principal" className="absolute right-0 top-12 grid w-64 gap-1 border border-white/10 bg-[#18201B] p-2 shadow-2xl">
+            {nav.map(({ href, label, icon: Icon }) => (
+              <Button key={href} asChild variant="ghost" className={`justify-start ${isActive(href) ? 'bg-[#F4F1E9] text-[#18201B] hover:bg-[#F4F1E9]' : 'text-[#F4F1E9] hover:bg-white/10 hover:text-white'}`}>
+                <Link href={href} aria-current={isActive(href) ? 'page' : undefined}>
+                  <Icon aria-hidden="true" />{label}
+                </Link>
+              </Button>
+            ))}
+            <div className="my-1 h-px bg-white/10" />
+            {email && <p className="break-all px-3 py-2 font-mono text-[0.65rem] text-white/55">{email}</p>}
+            <Button variant="ghost" onClick={onLogout} disabled={signingOut} className="justify-start text-[#F4F1E9] hover:bg-white/10 hover:text-white">
+              <LogOut aria-hidden="true" />{signingOut ? 'Saindo…' : 'Sair'}
+            </Button>
+          </nav>
+        </details>
       </div>
-      <details ref={moreRef} className="md:hidden">
-        <summary className="min-h-11 cursor-pointer rounded-md px-3 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2">Mais opções</summary>
-        <nav aria-label="Mais opções" className="grid gap-1">
-          {nav.slice(3).map(({ href, label, icon: Icon }) => (
-            <Button key={href} asChild variant="ghost" className="justify-start">
-              <Link href={href} aria-current={pathname === href ? 'page' : undefined}><Icon aria-hidden="true" />{label}</Link>
+
+      <nav aria-label="Navegação principal" className="hidden px-4 py-6 md:block">
+        <p className="mb-3 px-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-white/40">Operação</p>
+        <div className="grid gap-1">
+          {nav.map(({ href, label, icon: Icon }, index) => (
+            <Button
+              key={href}
+              variant="ghost"
+              asChild
+              className={`relative justify-start overflow-hidden px-3 ${isActive(href) ? 'bg-[#F4F1E9] text-[#18201B] hover:bg-[#F4F1E9]' : 'text-[#F4F1E9]/75 hover:bg-white/10 hover:text-white'} ${index === 3 ? 'mt-4' : ''}`}
+            >
+              <Link href={href} aria-current={isActive(href) ? 'page' : undefined}>
+                {isActive(href) && <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 bg-[#E65A2F]" />}
+                <Icon aria-hidden="true" />
+                {label}
+              </Link>
             </Button>
           ))}
-          {email && <p className="break-all px-3 py-2 text-xs text-muted-foreground">{email}</p>}
-          <Button variant="ghost" onClick={onLogout} disabled={signingOut} className="justify-start"><LogOut aria-hidden="true" />{signingOut ? 'Saindo…' : 'Sair'}</Button>
-        </nav>
-      </details>
-      {error && <p role="alert" className="px-3 text-sm text-destructive">{error}</p>}
+        </div>
+      </nav>
+
+      <div className="mt-auto hidden border-t border-white/10 p-4 md:block">
+        {email && <p className="mb-2 truncate px-3 font-mono text-[0.65rem] text-white/45">{email}</p>}
+        <Button variant="ghost" onClick={onLogout} disabled={signingOut} className="w-full justify-start text-[#F4F1E9]/70 hover:bg-white/10 hover:text-white">
+          <LogOut aria-hidden="true" />{signingOut ? 'Saindo…' : 'Sair'}
+        </Button>
+      </div>
+      {error && <p role="alert" className="px-5 pb-4 text-sm text-[#FFB19A]">{error}</p>}
     </aside>
   )
 }

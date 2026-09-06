@@ -45,16 +45,16 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
   }
 
   return (
-    <form onSubmit={event => { event.preventDefault(); applyFilters() }} className="mb-6 space-y-3" aria-busy={pending}>
-      <fieldset disabled={pending} className="min-w-0 space-y-3">
-        <div className="flex items-end gap-2">
+    <form onSubmit={event => { event.preventDefault(); applyFilters() }} className="mb-7 rounded-lg border bg-card p-4 md:p-5" aria-busy={pending}>
+      <fieldset disabled={pending} className="min-w-0 space-y-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <div className="min-w-0 flex-1">
-            <label htmlFor="busca-contatos" className="mb-2 block text-sm font-medium">Buscar contato</label>
+            <label htmlFor="busca-contatos" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Buscar contato</label>
             <Input id="busca-contatos" type="search" placeholder="Nome ou WhatsApp" maxLength={100} value={q} onChange={e => setQ(e.target.value)} />
           </div>
-          <Button type="submit">{pending ? 'Buscando…' : 'Buscar'}</Button>
+          <Button type="submit" className="sm:min-w-28">{pending ? 'Buscando…' : 'Buscar'}</Button>
         </div>
-        <div className="flex flex-wrap gap-2" aria-label="Filtrar por retorno">
+        <div className="flex flex-wrap items-center gap-2 border-t pt-4" aria-label="Filtrar por retorno">
           {[['todos', 'Todos'], ['hoje', 'Hoje'], ['atrasados', 'Atrasados']].map(([value, label]) => (
             <Button key={value} type="button" variant={initialRetorno === value ? 'secondary' : 'outline'} aria-pressed={initialRetorno === value} onClick={() => applyFilters(value)}>{label}</Button>
           ))}
@@ -63,7 +63,7 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
           </Button>
         </div>
         <div id="filtros-avancados" hidden={!expanded}>
-          <div className="grid gap-3 rounded-lg border p-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 border-t bg-secondary/35 p-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <label htmlFor="filtro-etapa" className="mb-2 block text-sm font-medium">Etapa</label>
               <Select value={status} onValueChange={setStatus} disabled={pending}>
@@ -83,7 +83,7 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
             <Button type="submit" className="sm:col-span-2 xl:col-span-4">Aplicar filtros</Button>
           </div>
         </div>
-        {(activeCount > 0 || initialQ) && <Button type="button" variant="link" className="px-0" onClick={() => {
+        {(activeCount > 0 || initialQ) && <Button type="button" variant="link" className="h-auto min-h-0 px-0 font-mono text-[0.68rem] uppercase tracking-[0.1em]" onClick={() => {
           setQ(''); setStatus('todos'); setRetorno('todos'); setDataInicio(''); setDataFim(''); setError('')
           startTransition(() => router.push('/leads'))
         }}>Limpar filtros</Button>}

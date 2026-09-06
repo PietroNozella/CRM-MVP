@@ -1,5 +1,6 @@
 ﻿import { createClient } from '@/lib/supabase/server'
 import { KanbanBoard } from '@/components/kanban-board'
+import { PageHeader } from '@/components/page-header'
 
 export default async function FunilPage() {
   const supabase = await createClient()
@@ -12,7 +13,7 @@ export default async function FunilPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Funil</h1>
+      <PageHeader index="03" title="Funil" description="Visualize o avanço e mova cada contato para a próxima etapa." />
       <KanbanBoard initialLeads={leads ?? []} />
     </div>
   )

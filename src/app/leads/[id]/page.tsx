@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
 import { whatsappMessage, whatsappLink, formatPhoneBR } from '@/lib/site'
+import { PageHeader } from '@/components/page-header'
 
 export default async function LeadDetailPage({
   params,
@@ -32,36 +33,23 @@ export default async function LeadDetailPage({
   const whatsappHref = whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <Button variant="outline" size="sm" asChild>
-        <Link href="/leads">← Voltar</Link>
-      </Button>
-      <Card>
-        <CardHeader>
-          <h1 className="break-words text-2xl font-semibold">{lead.nome}</h1>
-          <p className="text-sm text-muted-foreground">{formatPhoneBR(lead.whatsapp)}</p>
-        </CardHeader>
-        <CardContent>
-          {whatsappHref ? (
-            <Button asChild className="min-h-11 w-full sm:w-auto">
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="h-4 w-4 mr-2 text-green-100" />
-                Chamar no WhatsApp
-              </a>
-            </Button>
-          ) : (
-            <p role="status" className="text-sm text-muted-foreground">
-              Corrija o WhatsApp em “Dados do contato” para chamar.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Anotações</h2>
+    <div>
+      <PageHeader
+        index="02.1"
+        title={lead.nome}
+        description={formatPhoneBR(lead.whatsapp)}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" asChild><Link href="/leads">← Contatos</Link></Button>
+            {whatsappHref && <Button asChild><a href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle aria-hidden="true" />Chamar</a></Button>}
+          </div>
+        }
+      />
+      {!whatsappHref && <p role="status" className="mb-6 border-l-2 border-l-accent pl-3 text-sm text-muted-foreground">Corrija o WhatsApp nos dados do contato para iniciar a conversa.</p>}
+      <div className="grid gap-6 xl:grid-cols-[0.82fr_1.18fr] xl:items-start">
+        <section>
+          <p className="section-index">01 / HISTÓRICO</p>
+          <h2 className="mb-5 mt-2 text-xl font-semibold">Anotações</h2>
         {notesError ? (
           <p role="alert" className="text-sm text-destructive">
             Não foi possível carregar o histórico. Recarregue a página.
@@ -69,15 +57,17 @@ export default async function LeadDetailPage({
         ) : (
           <NotesTimeline leadId={lead.id} initialNotes={notes ?? []} />
         )}
-      </div>
-      <Card id="dados-contato" className="scroll-mt-4">
-        <CardHeader>
-          <CardTitle className="text-base">Atendimento e dados do contato</CardTitle>
+        </section>
+        <Card id="dados-contato" className="scroll-mt-4 border-t-2 border-t-primary">
+        <CardHeader className="border-b">
+          <p className="section-index">02 / CADASTRO</p>
+          <CardTitle className="mt-2 text-lg">Atendimento e dados do contato</CardTitle>
         </CardHeader>
         <CardContent>
           <LeadEditForm lead={lead} />
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

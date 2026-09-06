@@ -86,20 +86,20 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         )}
         {leads.map((lead) => (
           <TableRow key={lead.id}>
-            <TableCell>
+            <TableCell className="py-4">
               <Link
                 href={`/leads/${lead.id}`}
-                className="text-primary hover:underline font-medium"
+                className="font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline"
               >
                 {lead.nome}
               </Link>
             </TableCell>
-            <TableCell>
+            <TableCell className="font-mono text-xs">
               <a
                 href={whatsappPhoneUrl(lead.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-primary underline-offset-4 hover:underline"
               >
                 {formatPhoneBR(lead.whatsapp)}
               </a>
@@ -109,7 +109,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
               <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} leadName={lead.nome} />
             </TableCell>
             <TableCell className="hidden md:table-cell">{lead.interesse ?? <Dash />}</TableCell>
-            <TableCell className="hidden lg:table-cell">
+            <TableCell className="hidden font-mono text-xs lg:table-cell">
               {lead.valor_maximo != null ? (
                 money.format(lead.valor_maximo)
               ) : (
@@ -128,7 +128,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                   rel="noopener noreferrer"
                   aria-label={`Chamar ${lead.nome} no WhatsApp`}
                 >
-                  <MessageCircle className="h-4 w-4 mr-1 text-green-600" />
+                  <MessageCircle className="h-4 w-4 mr-1" />
                   Chamar
                 </a>
               </Button> : <Button asChild variant="outline"><Link href={`/leads/${lead.id}#dados-contato`}>Corrigir telefone</Link></Button>}

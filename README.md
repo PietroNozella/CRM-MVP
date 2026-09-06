@@ -1,6 +1,6 @@
-﻿# CRM — pequenos negócios
+﻿# PRUMO — CRM para pequenos negócios
 
-CRM simples (Next.js + Supabase): contatos, funil, origem, WhatsApp 1-click, webhook de captura.
+PRUMO é um CRM simples (Next.js + Supabase): contatos, funil, origem, WhatsApp 1-click e webhook de captura.
 
 Modelo: **1 instalação por cliente** — cada cliente tem seu projeto Supabase + seu deploy Vercel. Sem multi-tenant.
 
@@ -26,7 +26,7 @@ Bancos existentes (atualização, não instalação): rode os arquivos de `supab
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Vercel + local | anon key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Vercel + local (server-only) | service_role; nunca com prefixo `NEXT_PUBLIC_` |
 | `LEADS_WEBHOOK_SECRET` | Vercel + local + LP | segredo do webhook |
-| `NEXT_PUBLIC_APP_NAME` | Vercel (opcional) | nome no menu/título, padrão `CRM` |
+| `NEXT_PUBLIC_APP_NAME` | Vercel (opcional) | nome no menu/título, padrão `PRUMO` |
 | `NEXT_PUBLIC_WHATSAPP_TEMPLATE` | Vercel (opcional) | mensagem do botão Chamar, use `{nome}` |
 
 `NEXT_PUBLIC_*` entram no build — após mudar, faça redeploy.

@@ -237,9 +237,10 @@ export function CsvImport() {
   }
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <div>
-        <label className="text-sm font-medium mb-2 block">Arquivo CSV</label>
+    <div className="max-w-5xl space-y-6">
+      <div className="rounded-lg border border-t-2 border-t-accent bg-card p-5 md:p-6">
+        <p className="section-index">01 / ARQUIVO</p>
+        <label className="mb-3 mt-2 block text-lg font-semibold">Arquivo CSV</label>
         <Input
           type="file"
           accept=".csv,text/csv"
@@ -249,20 +250,21 @@ export function CsvImport() {
             if (f) onFile(f)
           }}
         />
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="mt-2 text-xs leading-5 text-muted-foreground">
           Exportado do Excel/Planilhas (aceita `;` ou `,`). Nome + WhatsApp obrigatórios.
         </p>
       </div>
 
       {headers.length > 0 && (
         <>
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium">
+          <div className="space-y-3 rounded-lg border bg-card p-5 md:p-6">
+            <p className="section-index">02 / MAPEAMENTO</p>
+            <h2 className="text-base font-semibold">
               Combine as colunas da planilha — {fileName} ({rows.length} linhas)
             </h2>
             {headers.map((h, i) => (
-              <div key={i} className="grid gap-2 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
-                <label htmlFor={`coluna-${i}`} className="break-words text-sm font-mono">{h}</label>
+              <div key={i} className="grid gap-2 border-t pt-3 sm:grid-cols-[minmax(10rem,1fr)_13rem] sm:items-center">
+                <label htmlFor={`coluna-${i}`} className="break-words font-mono text-xs">{h}</label>
                 <Select
                   value={mapping[i] ?? 'ignore'}
                   onValueChange={(v) =>
@@ -286,9 +288,9 @@ export function CsvImport() {
             ))}
           </div>
 
-          <div>
-            <h2 className="text-sm font-medium mb-2">Prévia (5 primeiras linhas)</h2>
-            <Table>
+          <div className="overflow-hidden rounded-lg border bg-card p-1">
+            <h2 className="px-4 py-4 text-base font-semibold">Prévia <span className="font-mono text-xs font-normal text-muted-foreground">/ 5 PRIMEIRAS LINHAS</span></h2>
+            <Table className="border-t">
               <TableHeader>
                 <TableRow>
                   {headers.map((h, i) => (

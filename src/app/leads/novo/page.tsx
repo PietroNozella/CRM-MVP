@@ -1,9 +1,10 @@
 import { LeadForm } from '@/components/lead-form'
+import { PageHeader } from '@/components/page-header'
 
 export default function NovoLeadPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Novo Contato</h1>
+    <div className="max-w-4xl">
+      <PageHeader index="04" title="Novo contato" description="Registre o essencial agora. O contexto pode crescer a cada conversa." />
       <LeadForm />
     </div>
   )

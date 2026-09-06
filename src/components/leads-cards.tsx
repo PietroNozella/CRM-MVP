@@ -22,12 +22,12 @@ export function LeadsCards({ leads }: { leads: Lead[] }) {
       {leads.map((lead) => {
         const href = whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
         return (
-          <Card key={lead.id}>
-            <CardContent className="pt-4 space-y-3">
+          <Card key={lead.id} className="border-l-2 border-l-primary">
+            <CardContent className="space-y-4 pt-4">
               <div className="space-y-2">
                 <Link
                   href={`/leads/${lead.id}`}
-                  className="block break-words font-medium hover:underline"
+                  className="block break-words text-lg font-semibold tracking-[-0.02em] hover:underline"
                 >
                   {lead.nome}
                 </Link>
@@ -47,7 +47,7 @@ export function LeadsCards({ leads }: { leads: Lead[] }) {
                       rel="noopener noreferrer"
                       aria-label={`Chamar ${lead.nome} no WhatsApp`}
                     >
-                      <MessageCircle className="h-4 w-4 mr-1 text-green-600" />
+                      <MessageCircle className="h-4 w-4 mr-1" />
                       Chamar
                     </a>
                   </Button>
