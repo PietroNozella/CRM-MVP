@@ -12,18 +12,18 @@ import { whatsappMessage, whatsappLink } from '@/lib/site'
 export function LeadsCards({ leads }: { leads: Lead[] }) {
   if (leads.length === 0) {
     return (
-      <p className="py-10 text-center text-sm text-muted-foreground md:hidden">
+      <p className="py-10 text-center text-sm text-muted-foreground xl:hidden">
         Nenhum contato encontrado. Limpe os filtros ou adicione um contato.
       </p>
     )
   }
   return (
-    <div className="space-y-3 md:hidden">
+    <div className="grid gap-3 lg:grid-cols-2 xl:hidden">
       {leads.map((lead) => {
         const href = whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
         return (
           <Card key={lead.id} className="border-l-2 border-l-primary">
-            <CardContent className="space-y-4 pt-4">
+            <CardContent className="space-y-4 pt-4 md:pt-4">
               <div className="space-y-2">
                 <Link
                   href={`/leads/${lead.id}`}

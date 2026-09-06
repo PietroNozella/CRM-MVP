@@ -47,7 +47,7 @@ export function RetornoCell({ lead }: { lead: Lead }) {
         {formatDateBR(lead.proximo_retorno)}
       </Badge>
       {lead.nota_retorno && (
-        <span className="block text-sm text-muted-foreground mt-1 break-words md:max-w-48">
+        <span className="mt-1 block break-words text-sm text-muted-foreground xl:max-w-56">
           {lead.nota_retorno}
         </span>
       )}
@@ -62,16 +62,16 @@ const money = new Intl.NumberFormat('pt-BR', {
 
 export function LeadsTable({ leads }: { leads: Lead[] }) {
   return (
-    <Table>
+    <Table className="min-w-[1040px] 2xl:min-w-[1280px]">
       <TableHeader>
         <TableRow>
           <TableHead>Nome</TableHead>
           <TableHead>WhatsApp</TableHead>
-          <TableHead className="hidden lg:table-cell">Email</TableHead>
+          <TableHead className="hidden 2xl:table-cell">Email</TableHead>
           <TableHead>Etapa</TableHead>
           <TableHead className="hidden md:table-cell">Interesse</TableHead>
           <TableHead className="hidden lg:table-cell">Valor</TableHead>
-          <TableHead className="hidden lg:table-cell">Origem</TableHead>
+          <TableHead className="hidden 2xl:table-cell">Origem</TableHead>
           <TableHead>Retorno</TableHead>
           <TableHead><span className="sr-only">Ações</span></TableHead>
         </TableRow>
@@ -86,7 +86,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         )}
         {leads.map((lead) => (
           <TableRow key={lead.id}>
-            <TableCell className="py-4">
+            <TableCell className="min-w-40 max-w-64 break-words py-4">
               <Link
                 href={`/leads/${lead.id}`}
                 className="font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline"
@@ -94,7 +94,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                 {lead.nome}
               </Link>
             </TableCell>
-            <TableCell className="font-mono text-xs">
+            <TableCell className="whitespace-nowrap font-mono text-xs">
               <a
                 href={whatsappPhoneUrl(lead.whatsapp)}
                 target="_blank"
@@ -104,20 +104,20 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                 {formatPhoneBR(lead.whatsapp)}
               </a>
             </TableCell>
-            <TableCell className="hidden lg:table-cell">{lead.email ?? <Dash />}</TableCell>
+            <TableCell className="hidden max-w-56 break-words 2xl:table-cell">{lead.email ?? <Dash />}</TableCell>
             <TableCell>
               <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} leadName={lead.nome} />
             </TableCell>
             <TableCell className="hidden md:table-cell">{lead.interesse ?? <Dash />}</TableCell>
-            <TableCell className="hidden font-mono text-xs lg:table-cell">
+            <TableCell className="hidden whitespace-nowrap font-mono text-xs lg:table-cell">
               {lead.valor_maximo != null ? (
                 money.format(lead.valor_maximo)
               ) : (
                 <Dash />
               )}
             </TableCell>
-            <TableCell className="hidden lg:table-cell">{lead.source ?? <Dash />}</TableCell>
-            <TableCell>
+            <TableCell className="hidden 2xl:table-cell">{lead.source ?? <Dash />}</TableCell>
+            <TableCell className="min-w-52">
               <RetornoCell lead={lead} />
             </TableCell>
             <TableCell>

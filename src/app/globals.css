@@ -15,14 +15,14 @@
     --secondary: 42 24% 89%;
     --secondary-foreground: 130 13% 11%;
     --muted: 42 24% 89%;
-    --muted-foreground: 130 7% 42%;
+    --muted-foreground: 130 7% 36%;
     --accent: 14 78% 54%;
-    --accent-foreground: 40 33% 97%;
+    --accent-foreground: 130 13% 11%;
     --destructive: 6 57% 44%;
     --destructive-foreground: 40 33% 97%;
     --border: 41 17% 82%;
     --input: 41 17% 76%;
-    --ring: 14 78% 54%;
+    --ring: 155 36% 22%;
     --chart-1: 155 36% 22%;
     --chart-2: 14 78% 54%;
     --chart-3: 207 49% 36%;
@@ -56,7 +56,7 @@
 
 @layer components {
   .eyebrow {
-    @apply font-mono text-[0.68rem] font-medium uppercase tracking-[0.2em] text-muted-foreground;
+    @apply font-mono text-[0.6875rem] font-medium uppercase tracking-[0.1em] text-muted-foreground;
   }
 
   .technical-panel {
@@ -65,11 +65,19 @@
   }
 
   .section-index {
-    @apply font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground;
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-muted-foreground;
   }
 
   .metric-number {
-    @apply font-mono tabular-nums tracking-[-0.05em];
+    @apply font-display tabular-nums tracking-normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

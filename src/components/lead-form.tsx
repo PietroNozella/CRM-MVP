@@ -85,11 +85,11 @@ export function LeadForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_19rem] xl:items-start">
         <section className="rounded-lg border bg-card p-5 md:p-6">
           <p className="section-index">01 / DADOS</p>
           <h2 className="mt-2 text-lg font-semibold">Informações principais</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
             <FormField control={form.control} name="nome" render={({ field }) => (
               <FormItem><FormLabel>Nome</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
@@ -108,7 +108,7 @@ export function LeadForm() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-t-2 border-t-accent bg-card p-5 md:p-6 lg:sticky lg:top-6">
+        <section className="rounded-lg border border-t-2 border-t-accent bg-card p-5 md:p-6 xl:sticky xl:top-6">
           <p className="section-index">02 / DIREÇÃO</p>
           <h2 className="mt-2 text-lg font-semibold">Próximo passo</h2>
           <div className="mt-6 space-y-5">

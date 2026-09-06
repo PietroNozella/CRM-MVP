@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { SITE_NAME } from '@/lib/site'
 
 export function PrumoMark({ className }: { className?: string }) {
   return (
@@ -21,7 +22,7 @@ export function Brand({ compact = false, className }: { compact?: boolean; class
     <span className={cn('inline-flex items-center gap-3', className)}>
       <PrumoMark />
       {!compact && (
-        <span className="text-lg font-semibold tracking-[0.2em]">PRUMO</span>
+        <span className="break-words font-display text-[1.75rem] font-semibold leading-none tracking-[0.08em]">{SITE_NAME}</span>
       )}
     </span>
   )

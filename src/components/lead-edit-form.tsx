@@ -92,7 +92,7 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <fieldset disabled={form.formState.isSubmitting} className="grid min-w-0 gap-5 sm:grid-cols-2">
+        <fieldset disabled={form.formState.isSubmitting} className="grid min-w-0 gap-5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
         <FormField
           control={form.control}
           name="status"
@@ -220,12 +220,12 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
           )}
         />
         {form.formState.errors.root && (
-          <p role="alert" className="text-sm text-destructive sm:col-span-2">
+          <p role="alert" className="col-span-full text-sm text-destructive">
             {form.formState.errors.root.message}
           </p>
         )}
-        <p role="status" className="font-mono text-xs text-muted-foreground sm:col-span-2">{form.formState.isSubmitting ? 'Salvando…' : form.formState.isDirty ? 'Alterações não salvas' : saved ? 'Alterações salvas.' : ''}</p>
-        <Button type="submit" className="sm:col-span-2 sm:w-fit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
+        <p role="status" className="col-span-full font-mono text-xs text-muted-foreground">{form.formState.isSubmitting ? 'Salvando…' : form.formState.isDirty ? 'Alterações não salvas' : saved ? 'Alterações salvas.' : ''}</p>
+        <Button type="submit" className="col-span-full sm:w-fit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
           {form.formState.isSubmitting ? 'Salvando…' : 'Salvar alterações'}
         </Button>
         </fieldset>

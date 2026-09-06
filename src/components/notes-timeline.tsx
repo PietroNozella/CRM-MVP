@@ -56,7 +56,7 @@ export function NotesTimeline({
   return (
     <div className="space-y-4">
       <form onSubmit={onSubmit} className="space-y-3 rounded-lg border border-t-2 border-t-accent bg-card p-4 md:p-5">
-        <label htmlFor="nova-nota" className="font-mono text-[0.65rem] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+        <label htmlFor="nova-nota" className="text-sm font-medium">
           O que foi combinado?
         </label>
         <textarea
@@ -68,7 +68,7 @@ export function NotesTimeline({
           value={texto}
           onChange={(e) => { setTexto(e.target.value); setSaved(false) }}
           placeholder="Ex: Cliente pediu retorno na segunda de manhã"
-          className="w-full scroll-mt-4 rounded-md border border-input bg-background p-3 text-base focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 disabled:opacity-60"
+          className="w-full scroll-mt-4 rounded-md border border-input bg-background p-3 text-base focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         />
         <Button type="submit" disabled={saving || !texto.trim()} className="min-h-11">
           {saving ? 'Salvando anotação…' : 'Salvar anotação'}
@@ -84,9 +84,9 @@ export function NotesTimeline({
         <div className="relative space-y-3 pl-5 before:absolute before:bottom-4 before:left-1.5 before:top-4 before:w-px before:bg-border">
           {initialNotes.map((n) => (
             <Card key={n.id} className="relative before:absolute before:-left-[1.14rem] before:top-5 before:h-2 before:w-2 before:rotate-45 before:bg-primary">
-              <CardContent className="pt-4">
+              <CardContent className="pt-4 md:pt-4">
                 <p className="text-sm whitespace-pre-wrap break-words">{n.texto}</p>
-                <p className="mt-2 font-mono text-[0.65rem] text-muted-foreground">
+                <p className="mt-2 font-mono text-xs text-muted-foreground">
                   {formatDateTime(n.created_at)}
                 </p>
               </CardContent>

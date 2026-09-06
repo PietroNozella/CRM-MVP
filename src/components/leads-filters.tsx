@@ -49,7 +49,7 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
       <fieldset disabled={pending} className="min-w-0 space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <div className="min-w-0 flex-1">
-            <label htmlFor="busca-contatos" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Buscar contato</label>
+            <label htmlFor="busca-contatos" className="mb-2 block text-sm font-medium">Buscar contato</label>
             <Input id="busca-contatos" type="search" placeholder="Nome ou WhatsApp" maxLength={100} value={q} onChange={e => setQ(e.target.value)} />
           </div>
           <Button type="submit" className="sm:min-w-28">{pending ? 'Buscando…' : 'Buscar'}</Button>
@@ -63,7 +63,7 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
           </Button>
         </div>
         <div id="filtros-avancados" hidden={!expanded}>
-          <div className="grid gap-4 border-t bg-secondary/35 p-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 border-t bg-secondary/35 p-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4">
             <div>
               <label htmlFor="filtro-etapa" className="mb-2 block text-sm font-medium">Etapa</label>
               <Select value={status} onValueChange={setStatus} disabled={pending}>
@@ -80,10 +80,10 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
             </div>
             <div><label htmlFor="filtro-data-inicio" className="mb-2 block text-sm font-medium">Cadastro de</label><Input id="filtro-data-inicio" type="date" value={dataInicio} max={dataFim || undefined} onChange={e => setDataInicio(e.target.value)} /></div>
             <div><label htmlFor="filtro-data-fim" className="mb-2 block text-sm font-medium">Cadastro até</label><Input id="filtro-data-fim" type="date" value={dataFim} min={dataInicio || undefined} onChange={e => setDataFim(e.target.value)} /></div>
-            <Button type="submit" className="sm:col-span-2 xl:col-span-4">Aplicar filtros</Button>
+            <Button type="submit" className="col-span-full">Aplicar filtros</Button>
           </div>
         </div>
-        {(activeCount > 0 || initialQ) && <Button type="button" variant="link" className="h-auto min-h-0 px-0 font-mono text-[0.68rem] uppercase tracking-[0.1em]" onClick={() => {
+        {(activeCount > 0 || initialQ) && <Button type="button" variant="link" className="min-h-11 px-0 text-sm" onClick={() => {
           setQ(''); setStatus('todos'); setRetorno('todos'); setDataInicio(''); setDataFim(''); setError('')
           startTransition(() => router.push('/leads'))
         }}>Limpar filtros</Button>}

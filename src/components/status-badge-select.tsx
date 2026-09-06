@@ -62,7 +62,7 @@ export function StatusBadgeSelect({
       <SelectTrigger
         aria-label={leadName ? `Etapa de ${leadName}` : 'Etapa do contato'}
         className={cn(
-          'min-h-11 min-w-0 px-3 font-mono text-[0.68rem] uppercase tracking-[0.06em] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'min-h-11 min-w-36 gap-2 px-3 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           STATUS_BADGE_CLASSES[currentStatus]
         )}
       >

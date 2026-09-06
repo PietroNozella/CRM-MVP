@@ -240,8 +240,9 @@ export function CsvImport() {
     <div className="max-w-5xl space-y-6">
       <div className="rounded-lg border border-t-2 border-t-accent bg-card p-5 md:p-6">
         <p className="section-index">01 / ARQUIVO</p>
-        <label className="mb-3 mt-2 block text-lg font-semibold">Arquivo CSV</label>
+        <label htmlFor="csv-file" className="mb-3 mt-2 block text-lg font-semibold">Arquivo CSV</label>
         <Input
+          id="csv-file"
           type="file"
           accept=".csv,text/csv"
           disabled={importing}
@@ -259,11 +260,11 @@ export function CsvImport() {
         <>
           <div className="space-y-3 rounded-lg border bg-card p-5 md:p-6">
             <p className="section-index">02 / MAPEAMENTO</p>
-            <h2 className="text-base font-semibold">
+            <h2 className="break-words text-base font-semibold">
               Combine as colunas da planilha — {fileName} ({rows.length} linhas)
             </h2>
             {headers.map((h, i) => (
-              <div key={i} className="grid gap-2 border-t pt-3 sm:grid-cols-[minmax(10rem,1fr)_13rem] sm:items-center">
+              <div key={i} className="grid gap-2 border-t pt-3 lg:grid-cols-[minmax(0,1fr)_13rem] lg:items-center">
                 <label htmlFor={`coluna-${i}`} className="break-words font-mono text-xs">{h}</label>
                 <Select
                   value={mapping[i] ?? 'ignore'}

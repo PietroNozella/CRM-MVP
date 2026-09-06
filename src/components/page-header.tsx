@@ -12,20 +12,20 @@ export function PageHeader({
   actions?: ReactNode
 }) {
   return (
-    <header className="mb-8 border-b border-border pb-5 md:mb-10 md:pb-7">
+    <header className="mb-6 border-b border-border pb-5 md:mb-8 md:pb-6">
       <div className="flex flex-wrap items-end justify-between gap-5">
-        <div className="min-w-0">
-          <p className="eyebrow">{index} / PRUMO</p>
-          <h1 className="mt-3 break-words text-3xl font-semibold leading-none tracking-[-0.04em] md:text-5xl">
+        <div className="min-w-0 flex-1 basis-64">
+          <p className="eyebrow"><span className="mr-2 inline-block h-1.5 w-1.5 bg-accent" aria-hidden="true" />{index} / ÁREA DE TRABALHO</p>
+          <h1 className="mt-2 break-words font-display text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.01em] md:text-5xl">
             {title}
           </h1>
           {description && (
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
+            <p className="mt-2 max-w-2xl text-base leading-6 text-muted-foreground">
               {description}
             </p>
           )}
         </div>
-        {actions && <div className="shrink-0">{actions}</div>}
+        {actions && <div className="max-w-full">{actions}</div>}
       </div>
     </header>
   )

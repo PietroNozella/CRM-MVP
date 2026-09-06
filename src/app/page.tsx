@@ -70,7 +70,7 @@ export default async function DashboardPage() {
       />
       <DashboardCards stats={stats} />
       <details className="mt-8 border-t border-border pt-4">
-        <summary className="flex min-h-11 cursor-pointer items-center font-mono text-xs font-medium uppercase tracking-[0.12em]">
+        <summary className="min-h-11 cursor-pointer py-3 font-mono text-xs font-medium uppercase tracking-[0.08em]">
           Ver resultados e origens
         </summary>
         <DashboardMetrics leads={leads ?? []} />

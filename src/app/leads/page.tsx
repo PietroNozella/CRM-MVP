@@ -115,7 +115,7 @@ export default async function LeadsPage({
         initialRetorno={typeof params.retorno === 'string' ? params.retorno : 'todos'}
       />
       <p className="mb-3 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground" role="status">{total === 0 ? 'Nenhum resultado' : `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} de ${total} contatos`}</p>
-      <div className="hidden overflow-hidden rounded-lg border bg-card md:block">
+      <div className="hidden overflow-hidden rounded-lg border bg-card xl:block">
         <LeadsTable leads={leads ?? []} />
       </div>
       <LeadsCards leads={leads ?? []} />

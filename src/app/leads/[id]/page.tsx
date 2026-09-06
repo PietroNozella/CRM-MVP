@@ -63,7 +63,7 @@ export default async function LeadDetailPage({
           <p className="section-index">02 / CADASTRO</p>
           <CardTitle className="mt-2 text-lg">Atendimento e dados do contato</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-5 md:pt-6">
           <LeadEditForm lead={lead} />
         </CardContent>
         </Card>

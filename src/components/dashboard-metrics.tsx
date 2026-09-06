@@ -28,7 +28,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
     .slice(0, 5)
 
   return (
-    <div className="mt-4 grid gap-4 md:grid-cols-2">
+    <div className="mt-4 grid gap-4 xl:grid-cols-2">
       <Card className="border-t-2 border-t-primary">
         <CardHeader className="border-b">
           <p className="section-index">01 / CONVERSÃO</p>
@@ -36,7 +36,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
             Contatos fechados — {pct(fechados, total)} ({fechados}/{total})
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 pt-5 md:pt-6">
           {LEAD_STATUSES.map((s) => {
             const count = leads.filter((l) => l.status === s.value).length
             return (
@@ -66,7 +66,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
             Origens (top 5)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-5 md:pt-6">
           {origins.length === 0 ? (
             <p className="text-sm text-muted-foreground">Sem dados.</p>
           ) : (

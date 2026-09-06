@@ -100,7 +100,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
       <div className="mb-4 rounded-lg border bg-card p-4 md:hidden">
-        <label htmlFor="etapa-visivel" className="mb-2 block font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">Ver etapa</label>
+        <label htmlFor="etapa-visivel" className="mb-2 block text-sm font-medium">Ver etapa</label>
         <Select value={activeStage} onValueChange={value => setActiveStage(value as LeadStatus)} disabled={saving}>
           <SelectTrigger id="etapa-visivel"><SelectValue /></SelectTrigger>
           <SelectContent>{LEAD_STATUSES.map(stage => <SelectItem key={stage.value} value={stage.value}>{stage.label} ({board[stage.value].length})</SelectItem>)}</SelectContent>
@@ -138,7 +138,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                     dragId === lead.id ? 'scale-[0.98] opacity-50' : ''
                   }`}
                 >
-                  <CardContent className="pb-3 pt-3">
+                  <CardContent className="p-3 md:p-3">
                     <Link
                       href={`/leads/${lead.id}`}
                       className="block break-words text-sm font-semibold hover:underline"
@@ -147,7 +147,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                     >
                       {lead.nome}
                     </Link>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="mt-1 break-words text-sm text-muted-foreground">
                       {lead.interesse ?? 'Sem interesse informado'}
                     </p>
                     <Select
