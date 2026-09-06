@@ -1,9 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { DashboardCards } from '@/components/dashboard-cards'
+import { DashboardMetrics } from '@/components/dashboard-metrics'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const { data: leads, error } = await supabase.from('leads').select('status')
+  const { data: leads, error } = await supabase
+    .from('leads')
+    .select('status,source')
 
   if (error) throw error
 
@@ -21,6 +24,7 @@ export default async function DashboardPage() {
     <div>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       <DashboardCards stats={stats} />
+      <DashboardMetrics leads={leads ?? []} />
     </div>
   )
 }
