@@ -9,6 +9,8 @@ export interface Lead {
   interesse: string | null
   valor_maximo: number | null
   source: string | null
+  proximo_retorno: string | null
+  nota_retorno: string | null
   created_at: string
 }
 

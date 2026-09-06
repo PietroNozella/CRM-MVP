@@ -31,6 +31,8 @@ const schema = z.object({
   status: z.enum(['novo', 'em_atendimento', 'em_negociacao', 'fechado']),
   interesse: z.string().optional(),
   valor_maximo: z.optional(z.number().positive()),
+  proximo_retorno: z.string().optional().or(z.literal('')),
+  nota_retorno: z.string().optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -46,6 +48,8 @@ export function LeadForm() {
       status: 'novo',
       interesse: '',
       valor_maximo: undefined,
+      proximo_retorno: '',
+      nota_retorno: '',
     },
   })
 
@@ -61,6 +65,8 @@ export function LeadForm() {
         data.valor_maximo && !Number.isNaN(data.valor_maximo)
           ? data.valor_maximo
           : null,
+      proximo_retorno: data.proximo_retorno || null,
+      nota_retorno: data.nota_retorno || null,
     })
     if (error) {
       form.setError('root', { message: error.message })
@@ -172,6 +178,32 @@ export function LeadForm() {
                     )
                   }
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="proximo_retorno"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Próximo retorno (opcional)</FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="nota_retorno"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nota do retorno (opcional)</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Ex: Ligar para confirmar orçamento" />
               </FormControl>
               <FormMessage />
             </FormItem>

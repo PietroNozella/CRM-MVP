@@ -18,6 +18,7 @@ interface LeadsFiltersProps {
   initialStatus?: string
   initialDataInicio?: string
   initialDataFim?: string
+  initialRetorno?: string
 }
 
 export function LeadsFilters({
@@ -25,12 +26,14 @@ export function LeadsFilters({
   initialStatus = 'todos',
   initialDataInicio = '',
   initialDataFim = '',
+  initialRetorno = 'todos',
 }: LeadsFiltersProps) {
   const router = useRouter()
   const [q, setQ] = useState(initialQ)
   const [status, setStatus] = useState(initialStatus)
   const [dataInicio, setDataInicio] = useState(initialDataInicio)
   const [dataFim, setDataFim] = useState(initialDataFim)
+  const [retorno, setRetorno] = useState(initialRetorno)
 
   const applyFilters = useCallback(() => {
     const params = new URLSearchParams()
@@ -38,14 +41,16 @@ export function LeadsFilters({
     if (status && status !== 'todos') params.set('status', status)
     if (dataInicio) params.set('data_inicio', dataInicio)
     if (dataFim) params.set('data_fim', dataFim)
+    if (retorno && retorno !== 'todos') params.set('retorno', retorno)
     router.push(`/leads?${params.toString()}`)
-  }, [q, status, dataInicio, dataFim, router])
+  }, [q, status, dataInicio, dataFim, retorno, router])
 
   const clearFilters = useCallback(() => {
     setQ('')
     setStatus('todos')
     setDataInicio('')
     setDataFim('')
+    setRetorno('todos')
     router.push('/leads')
   }, [router])
 
@@ -93,6 +98,19 @@ export function LeadsFilters({
           onChange={(e) => setDataFim(e.target.value)}
           className="relative pr-10 w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
+      </div>
+      <div className="w-[165px]">
+        <label className="text-sm font-medium mb-2 block">Retorno</label>
+        <Select value={retorno} onValueChange={setRetorno}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="agendados">Agendados</SelectItem>
+            <SelectItem value="atrasados">Atrasados</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex gap-2">
         <Button onClick={applyFilters}>Filtrar</Button>

@@ -14,6 +14,8 @@ export default async function LeadsPage({
     typeof params.data_inicio === 'string' ? params.data_inicio : undefined
   const dataFim =
     typeof params.data_fim === 'string' ? params.data_fim : undefined
+  const retorno =
+    typeof params.retorno === 'string' ? params.retorno : undefined
 
   const supabase = await createClient()
   let query = supabase.from('leads').select('*').order('created_at', { ascending: false })
@@ -30,6 +32,13 @@ export default async function LeadsPage({
   if (dataFim) {
     query = query.lte('created_at', `${dataFim}T23:59:59.999Z`)
   }
+  if (retorno === 'agendados') {
+    query = query.not('proximo_retorno', 'is', null)
+  }
+  if (retorno === 'atrasados') {
+    const today = new Date().toISOString().slice(0, 10)
+    query = query.lt('proximo_retorno', today)
+  }
 
   const { data: leads, error } = await query
 
@@ -39,11 +48,12 @@ export default async function LeadsPage({
     <div>
       <h1 className="text-2xl font-bold mb-6">Contatos</h1>
       <LeadsFilters
-        key={`${params.q ?? ''}-${params.status ?? ''}-${params.data_inicio ?? ''}-${params.data_fim ?? ''}`}
+        key={`${params.q ?? ''}-${params.status ?? ''}-${params.data_inicio ?? ''}-${params.data_fim ?? ''}-${params.retorno ?? ''}`}
         initialQ={typeof params.q === 'string' ? params.q : ''}
         initialStatus={typeof params.status === 'string' ? params.status : 'todos'}
         initialDataInicio={typeof params.data_inicio === 'string' ? params.data_inicio : ''}
         initialDataFim={typeof params.data_fim === 'string' ? params.data_fim : ''}
+        initialRetorno={typeof params.retorno === 'string' ? params.retorno : 'todos'}
       />
       <LeadsTable leads={leads ?? []} />
     </div>

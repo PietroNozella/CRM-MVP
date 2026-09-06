@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { MessageCircle } from 'lucide-react'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
 import { whatsappMessage } from '@/lib/site'
@@ -44,6 +45,33 @@ function EmptyCell() {
   )
 }
 
+function todayISO() {
+  const d = new Date()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${m}-${day}`
+}
+
+function formatDateBR(iso: string) {
+  const [y, m, d] = iso.split('-')
+  return `${d}/${m}/${y}`
+}
+
+function RetornoCell({ lead }: { lead: Lead }) {
+  if (!lead.proximo_retorno) return <EmptyCell />
+  const today = todayISO()
+  const overdue = lead.proximo_retorno < today
+  const isToday = lead.proximo_retorno === today
+  return (
+    <span title={lead.nota_retorno ?? undefined}>
+      <Badge variant={overdue ? 'destructive' : isToday ? 'default' : 'secondary'}>
+        {overdue ? 'Atrasado ' : isToday ? 'Hoje ' : ''}
+        {formatDateBR(lead.proximo_retorno)}
+      </Badge>
+    </span>
+  )
+}
+
 export function LeadsTable({ leads }: { leads: Lead[] }) {
   return (
     <Table>
@@ -56,6 +84,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
           <TableHead>Interesse</TableHead>
           <TableHead>Valor</TableHead>
           <TableHead>Origem</TableHead>
+          <TableHead>Retorno</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
@@ -86,6 +115,9 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
               )}
             </TableCell>
             <TableCell>{lead.source ?? <EmptyCell />}</TableCell>
+            <TableCell>
+              <RetornoCell lead={lead} />
+            </TableCell>
             <TableCell>
               <Button size="sm" variant="outline" asChild>
                 <a

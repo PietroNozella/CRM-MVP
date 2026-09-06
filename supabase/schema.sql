@@ -14,6 +14,8 @@ CREATE TABLE leads (
   interesse TEXT,
   valor_maximo NUMERIC,
   source TEXT,
+  proximo_retorno DATE,
+  nota_retorno TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -40,3 +42,5 @@ ALTER TABLE imoveis ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all for leads" ON leads FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for imoveis" ON imoveis FOR ALL USING (true) WITH CHECK (true);
+
+CREATE INDEX IF NOT EXISTS leads_proximo_retorno_idx ON leads (proximo_retorno);
