@@ -2,8 +2,11 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { NotesTimeline } from '@/components/notes-timeline'
+import { LeadEditForm } from '@/components/lead-edit-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { MessageCircle } from 'lucide-react'
+import { whatsappMessage, whatsappLink } from '@/lib/site'
 
 export default async function LeadDetailPage({
   params,
@@ -15,9 +18,10 @@ export default async function LeadDetailPage({
     .from('leads')
     .select('*')
     .eq('id', params.id)
-    .single()
+    .maybeSingle()
 
-  if (error || !lead) notFound()
+  if (error) throw error
+  if (!lead) notFound()
 
   const { data: notes } = await supabase
     .from('notes')
@@ -34,27 +38,27 @@ export default async function LeadDetailPage({
         <CardHeader>
           <CardTitle>{lead.nome}</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm space-y-1">
-          <p>
-            <span className="text-muted-foreground">WhatsApp: </span>
-            {lead.whatsapp}
-          </p>
-          {lead.email && (
-            <p>
-              <span className="text-muted-foreground">Email: </span>
-              {lead.email}
-            </p>
-          )}
-          <p>
-            <span className="text-muted-foreground">Status: </span>
-            {lead.status}
-          </p>
-          {lead.interesse && (
-            <p>
-              <span className="text-muted-foreground">Interesse: </span>
-              {lead.interesse}
-            </p>
-          )}
+        <CardContent>
+          <Button size="sm" variant="outline" asChild>
+            <a
+              href={
+                whatsappLink(lead.whatsapp, whatsappMessage(lead.nome)) ?? '#'
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="h-4 w-4 mr-1 text-green-600" />
+              Chamar no WhatsApp
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Editar contato</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LeadEditForm lead={lead} />
         </CardContent>
       </Card>
       <div>

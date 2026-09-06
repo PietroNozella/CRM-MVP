@@ -34,14 +34,14 @@ CREATE TABLE imoveis (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- RLS: instalacao single-tenant (1 empresa por banco). Policies abertas para
--- o app funcionar sem login. Se o cliente pedir login depois, troque por
--- policies com auth.uid() — ver Supabase Auth docs.
+-- RLS: instalacao single-tenant (1 empresa por banco). Apenas usuarios
+-- logados (Supabase Auth, cadastro criado pelo admin) acessam. Anonimo
+-- nao le nem grava. Webhook usa service_role (contorna RLS).
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE imoveis ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow all for leads" ON leads FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all for imoveis" ON imoveis FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Authenticated full access for leads" ON leads FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Authenticated full access for imoveis" ON imoveis FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Anotacoes por contato
 CREATE TABLE notes (
@@ -52,7 +52,13 @@ CREATE TABLE notes (
 );
 
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all for notes" ON notes FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Authenticated full access for notes" ON notes FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Anonimo sem acesso (service_role nao e afetado, webhook continua ok).
+REVOKE ALL ON leads, notes, imoveis FROM anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON leads TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON notes TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON imoveis TO authenticated;
 
 CREATE INDEX IF NOT EXISTS leads_proximo_retorno_idx ON leads (proximo_retorno);
 CREATE INDEX IF NOT EXISTS leads_created_id_idx ON leads (created_at DESC, id DESC);

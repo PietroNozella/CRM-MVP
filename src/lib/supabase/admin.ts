@@ -1,3 +1,4 @@
+import 'server-only'
 import { createClient } from '@supabase/supabase-js'
 
 // Server-only: usa service_role, nunca exponha com NEXT_PUBLIC_.

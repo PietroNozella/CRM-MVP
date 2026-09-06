@@ -9,11 +9,12 @@ Modelo: **1 instalação por cliente** — cada cliente tem seu projeto Supabase
 ## Instalação por cliente (checklist)
 
 1. **Supabase:** crie um projeto novo → SQL Editor → rode `supabase/schema.sql` inteiro.
-2. **Chaves:** no Supabase, Settings → API → copie URL, `anon` e `service_role`.
-3. **Deploy:** use o botão acima ou `vercel` na pasta → cadastre as envs abaixo (Production + Preview).
-4. **Segredo webhook:** gere um hex de 32 bytes e cadastre como `LEADS_WEBHOOK_SECRET` (Vercel + `.env.local`).
-5. **LP do cliente:** o formulário deve mandar `POST /api/webhooks/leads` com header `Authorization: Bearer <segredo>` e body `{ "name", "phone", "email?", "source?" }`.
-6. **Teste:** crie 1 contato manual + 1 via webhook, confira WhatsApp e filtro por status.
+2. **Auth:** Authentication → Add user → crie o login do cliente (email + senha). Em seguida desative cadastro público: Authentication → Settings → desmarque "Allow new users to sign up".
+3. **Chaves:** no Supabase, Settings → API → copie URL, `anon` e `service_role`.
+4. **Deploy:** use o botão acima ou `vercel` na pasta → cadastre as envs abaixo (Production + Preview).
+5. **Segredo webhook:** gere um hex de 32 bytes e cadastre como `LEADS_WEBHOOK_SECRET` (Vercel + `.env.local`).
+6. **LP do cliente (server-side, nunca no JS público):** backend da LP (ex: WPCode/functions.php no WordPress) manda `POST /api/webhooks/leads` com header `Authorization: Bearer <segredo>` e body `{ "name", "phone", "email?", "source?" }`.
+7. **Teste:** login → crie 1 contato manual + 1 via webhook, confira WhatsApp, follow-up e filtro por status.
 
 Bancos existentes (atualização, não instalação): rode os arquivos de `supabase/migrations/` na ordem de data no SQL Editor.
 
