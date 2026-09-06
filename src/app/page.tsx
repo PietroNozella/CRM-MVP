@@ -1,7 +1,7 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { DashboardCards } from '@/components/dashboard-cards'
 import { FunnelCard, OriginsCard } from '@/components/dashboard-metrics'
-import { WhoToCall } from '@/components/who-to-call'
+import { AgendaTimeline } from '@/components/agenda-timeline'
 import { ReturnCalendar } from '@/components/return-calendar'
 import { todayISO } from '@/lib/dates'
 import { PageHeader } from '@/components/page-header'
@@ -43,15 +43,7 @@ export default async function DashboardPage({
 
   if (error) throw error
 
-  const byStatus: Record<string, number> = {}
-  for (const l of leads ?? []) {
-    byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
-  }
-
-  const stats = {
-    total: leads?.length ?? 0,
-    byStatus,
-  }
+  const total = leads?.length ?? 0
 
   const today = todayISO()
   const [overdueRes, todayRes, freshRes, monthRes] = await Promise.all([
@@ -95,21 +87,64 @@ export default async function DashboardPage({
     }
   }
 
+  const overdueCount = overdueRes.count ?? 0
+  const todayCount = todayRes.count ?? 0
+
   return (
     <div>
       <PageHeader
         title="Hoje"
         description="Quem precisa de retorno, em ordem. Comece pelo topo."
       />
-      <WhoToCall
-        overdue={overdueRes.data ?? []}
-        today={todayRes.data ?? []}
-        fresh={freshRes.data ?? []}
-        counts={{ overdue: overdueRes.count ?? 0, today: todayRes.count ?? 0, fresh: freshRes.count ?? 0 }}
-        hasAny={stats.total > 0}
-      />
-      <DashboardCards stats={stats} />
-      <div className="mt-4 grid gap-4 xl:grid-cols-2">
+      {total === 0 ? (
+        <div className="py-8">
+          <p className="font-display text-3xl font-semibold">
+            Toda conversa começa com um contato.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Cadastre o primeiro e saiba quem chamar todo dia.
+          </p>
+          <Link
+            href="/leads/novo"
+            className="mt-4 inline-flex min-h-11 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+          >
+            Cadastrar contato
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-end gap-x-10 gap-y-4 border-b border-border pb-6">
+            <Link href="/leads?retorno=hoje" className="group">
+              <span className="metric-number block text-5xl font-semibold leading-none md:text-6xl">
+                {todayCount}
+              </span>
+              <span className="mt-1 block text-sm text-muted-foreground group-hover:underline">
+                para hoje →
+              </span>
+            </Link>
+            <Link href="/leads?retorno=atrasados" className="group">
+              <span className="metric-number block text-5xl font-semibold leading-none text-destructive md:text-6xl">
+                {overdueCount}
+              </span>
+              <span className="mt-1 block text-sm text-muted-foreground group-hover:underline">
+                atrasados →
+              </span>
+            </Link>
+            <span className="pb-1 text-sm text-muted-foreground">
+              {total} contato{total === 1 ? '' : 's'} no total
+            </span>
+          </div>
+          <div className="mt-2">
+            <AgendaTimeline
+              overdue={overdueRes.data ?? []}
+              today={todayRes.data ?? []}
+              fresh={freshRes.data ?? []}
+              todayISO={today}
+            />
+          </div>
+        </>
+      )}
+      <div className="mt-6 grid gap-4 xl:grid-cols-2">
         <ReturnCalendar year={calY} month={calM} counts={monthCounts} />
         <FunnelCard leads={leads ?? []} />
       </div>

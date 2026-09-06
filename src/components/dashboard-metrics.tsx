@@ -87,13 +87,21 @@ export function OriginsCard({ leads }: { leads: LeadMetric[] }) {
           {origins.length === 0 ? (
             <p className="text-sm text-muted-foreground">Sem dados.</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {origins.map(([name, v]) => (
-                <div key={name} className="flex justify-between border-b py-2 text-sm last:border-b-0">
-                  <span className="truncate">{name}</span>
-                  <span className="ml-4 shrink-0 font-mono text-xs text-muted-foreground">
-                    {v.total} · {pct(v.fechados, v.total)} fech.
-                  </span>
+                <div key={name}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="truncate">{name}</span>
+                    <span className="ml-4 shrink-0 font-mono text-xs text-muted-foreground">
+                      {v.total} · {pct(v.fechados, v.total)} fech.
+                    </span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden bg-secondary">
+                    <div
+                      className="h-full bg-accent transition-all"
+                      style={{ width: pct(v.total, origins[0][1].total) }}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
