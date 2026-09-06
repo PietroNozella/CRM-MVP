@@ -29,21 +29,21 @@ export default async function DashboardPage() {
   const [overdueRes, todayRes, freshRes] = await Promise.all([
     supabase
       .from('leads')
-      .select(CALL_COLS)
+      .select(CALL_COLS, { count: 'exact' })
       .lt('proximo_retorno', today)
       .neq('status', 'fechado')
       .order('proximo_retorno', { ascending: true })
       .limit(5),
     supabase
       .from('leads')
-      .select(CALL_COLS)
+      .select(CALL_COLS, { count: 'exact' })
       .eq('proximo_retorno', today)
       .neq('status', 'fechado')
       .order('created_at', { ascending: true })
       .limit(5),
     supabase
       .from('leads')
-      .select(CALL_COLS)
+      .select(CALL_COLS, { count: 'exact' })
       .eq('status', 'novo')
       .is('proximo_retorno', null)
       .order('created_at', { ascending: true })
@@ -55,11 +55,13 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold">Hoje</h1>
+      <p className="mb-6 mt-1 text-sm text-muted-foreground">Veja quem precisa de retorno e continue o atendimento.</p>
       <WhoToCall
         overdue={overdueRes.data ?? []}
         today={todayRes.data ?? []}
         fresh={freshRes.data ?? []}
+        counts={{ overdue: overdueRes.count ?? 0, today: todayRes.count ?? 0, fresh: freshRes.count ?? 0 }}
         hasAny={stats.total > 0}
       />
       <DashboardCards stats={stats} />

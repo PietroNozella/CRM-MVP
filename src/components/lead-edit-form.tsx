@@ -1,11 +1,13 @@
 ﻿'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/client'
 import type { Lead } from '@/types'
+import { normalizeBrazilPhone } from '@/lib/site'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,8 +28,8 @@ import {
 } from '@/components/ui/select'
 
 const schema = z.object({
-  nome: z.string().min(2, 'Nome obrigatório'),
-  whatsapp: z.string().min(10, 'WhatsApp inválido'),
+  nome: z.string().trim().min(2, 'Informe o nome do contato'),
+  whatsapp: z.string().refine(value => normalizeBrazilPhone(value) !== null, 'Informe um telefone brasileiro com DDD'),
   email: z.string().email().optional().or(z.literal('')),
   status: z.enum(['novo', 'em_atendimento', 'em_negociacao', 'fechado']),
   interesse: z.string().optional(),
@@ -40,6 +42,7 @@ type FormData = z.infer<typeof schema>
 
 export function LeadEditForm({ lead }: { lead: Lead }) {
   const router = useRouter()
+  const [saved, setSaved] = useState(false)
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -55,12 +58,15 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
   })
 
   async function onSubmit(data: FormData) {
+    setSaved(false)
+    form.clearErrors('root')
+    try {
     const supabase = createClient()
     const { error } = await supabase
       .from('leads')
       .update({
         nome: data.nome,
-        whatsapp: data.whatsapp,
+        whatsapp: normalizeBrazilPhone(data.whatsapp)!,
         email: data.email || null,
         status: data.status,
         interesse: data.interesse || null,
@@ -74,62 +80,26 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
       .eq('id', lead.id)
       .select('id')
       .single()
-    if (error) {
-      form.setError('root', { message: error.message })
-      return
-    }
+    if (error) throw error
+    form.reset(data)
+    setSaved(true)
     router.refresh()
+    } catch {
+      form.setError('root', { message: 'Não foi possível salvar. Suas alterações foram mantidas; tente novamente.' })
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="nome"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="whatsapp"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>WhatsApp</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email (opcional)</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <fieldset disabled={form.formState.isSubmitting} className="min-w-0 space-y-4">
         <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormLabel>Etapa</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value} disabled={form.formState.isSubmitting}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
@@ -143,41 +113,6 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="interesse"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Interesse / serviço (opcional)</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="valor_maximo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Valor (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -208,17 +143,92 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="nome"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="whatsapp"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>WhatsApp</FormLabel>
+              <FormControl>
+                <Input {...field} type="tel" inputMode="tel" autoComplete="tel" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email (opcional)</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="interesse"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Interesse / serviço (opcional)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="valor_maximo"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Valor (opcional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  step="0.01"
+                  inputMode="decimal"
+                  {...field}
+                  value={field.value ?? ''}
+                  onChange={(e) =>
+                    field.onChange(
+                      e.target.value ? Number(e.target.value) : undefined
+                    )
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {form.formState.errors.root && (
-          <p className="text-sm text-destructive">
+          <p role="alert" className="text-sm text-destructive">
             {form.formState.errors.root.message}
           </p>
         )}
-        {form.formState.isSubmitSuccessful && !form.formState.errors.root && (
-          <p className="text-sm text-green-700">Salvo.</p>
-        )}
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          Salvar alterações
+        <p role="status" className="text-sm text-muted-foreground">{form.formState.isSubmitting ? 'Salvando…' : form.formState.isDirty ? 'Alterações não salvas' : saved ? 'Alterações salvas.' : ''}</p>
+        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
+          {form.formState.isSubmitting ? 'Salvando…' : 'Salvar alterações'}
         </Button>
+        </fieldset>
       </form>
     </Form>
   )

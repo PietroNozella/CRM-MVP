@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { LEAD_STATUSES } from '@/lib/pipeline'
@@ -37,6 +37,17 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
   const [dragId, setDragId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [activeStage, setActiveStage] = useState<LeadStatus>('novo')
+  const [movedTo, setMovedTo] = useState<LeadStatus | null>(null)
+  const [message, setMessage] = useState('')
+  const headings = useRef<Partial<Record<LeadStatus, HTMLHeadingElement | null>>>({})
+
+  useEffect(() => {
+    if (!movedTo) return
+    const visibleStage = window.matchMedia('(min-width: 768px)').matches ? movedTo : activeStage
+    headings.current[visibleStage]?.focus()
+    setMovedTo(null)
+  }, [movedTo, activeStage])
 
   // Salva primeiro, atualiza o estado de forma imutavel depois.
   // Sem otimismo: evita divergencia tela/banco e dispensa rollback.
@@ -54,6 +65,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
 
     setSaving(true)
     setError(null)
+    setMessage('')
     try {
       const supabase = createClient()
       const { error } = await supabase
@@ -72,6 +84,8 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
         next[to] = [...next[to], { ...lead, status: to }]
         return next
       })
+      setMessage(`${lead.nome}: etapa alterada para ${LEAD_STATUSES.find(s => s.value === to)?.label}.`)
+      setMovedTo(to)
     } catch {
       setError('Não foi possível mudar a etapa. Tente novamente.')
     } finally {
@@ -82,14 +96,21 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
   return (
     <div>
       <div className="min-h-6 mb-2">
-        <p role="status" className="text-xs text-muted-foreground">{saving ? 'Salvando etapa…' : ''}</p>
+        <p role="status" className="text-sm text-muted-foreground">{saving ? 'Salvando etapa…' : message}</p>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="mb-4 md:hidden">
+        <label htmlFor="etapa-visivel" className="mb-2 block text-sm font-medium">Ver etapa</label>
+        <Select value={activeStage} onValueChange={value => setActiveStage(value as LeadStatus)} disabled={saving}>
+          <SelectTrigger id="etapa-visivel"><SelectValue /></SelectTrigger>
+          <SelectContent>{LEAD_STATUSES.map(stage => <SelectItem key={stage.value} value={stage.value}>{stage.label} ({board[stage.value].length})</SelectItem>)}</SelectContent>
+        </Select>
+      </div>
+      <div className="md:flex gap-4 md:overflow-x-auto pb-4">
         {LEAD_STATUSES.map((s) => (
           <div
             key={s.value}
-            className="w-64 shrink-0 rounded-lg bg-muted/50 p-3"
+            className={`${s.value === activeStage ? 'block' : 'hidden'} md:block w-full md:w-64 shrink-0 rounded-lg bg-muted/50 p-3`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault()
@@ -98,7 +119,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
             }}
           >
             <div className="flex justify-between items-center mb-3 px-1">
-              <h2 className="text-sm font-semibold">{s.label}</h2>
+              <h2 ref={node => { headings.current[s.value] = node }} tabIndex={-1} className="rounded text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{s.label}</h2>
               <span className="text-xs text-muted-foreground">
                 {board[s.value].length}
               </span>
@@ -107,17 +128,17 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               {board[s.value].map((lead) => (
                 <Card
                   key={lead.id}
-                  draggable
+                  draggable={!saving}
                   onDragStart={() => setDragId(lead.id)}
                   onDragEnd={() => setDragId(null)}
-                  className={`cursor-grab active:cursor-grabbing ${
+                  className={`md:cursor-grab md:active:cursor-grabbing ${
                     dragId === lead.id ? 'opacity-50' : ''
                   }`}
                 >
                   <CardContent className="pt-3 pb-3">
                     <Link
                       href={`/leads/${lead.id}`}
-                      className="text-sm font-medium hover:underline"
+                      className="block break-words text-sm font-medium hover:underline"
                       draggable={false}
                       onDragStart={(e) => e.preventDefault()}
                     >

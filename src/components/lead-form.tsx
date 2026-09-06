@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/client'
+import { normalizeBrazilPhone } from '@/lib/site'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -25,8 +26,8 @@ import {
 import { LEAD_STATUSES } from '@/lib/pipeline'
 
 const schema = z.object({
-  nome: z.string().min(2, 'Nome obrigatório'),
-  whatsapp: z.string().min(10, 'WhatsApp inválido'),
+  nome: z.string().trim().min(2, 'Informe o nome do contato'),
+  whatsapp: z.string().refine(value => normalizeBrazilPhone(value) !== null, 'Informe um telefone brasileiro com DDD'),
   email: z.string().email().optional().or(z.literal('')),
   status: z.enum(['novo', 'em_atendimento', 'em_negociacao', 'fechado']),
   interesse: z.string().optional(),
@@ -54,12 +55,14 @@ export function LeadForm() {
   })
 
   async function onSubmit(data: FormData) {
+    form.clearErrors('root')
+    try {
     const supabase = createClient()
     const { data: created, error } = await supabase
       .from('leads')
       .insert({
         nome: data.nome,
-        whatsapp: data.whatsapp,
+        whatsapp: normalizeBrazilPhone(data.whatsapp)!,
         email: data.email || null,
         status: data.status,
         interesse: data.interesse || null,
@@ -72,12 +75,12 @@ export function LeadForm() {
       })
       .select('id')
       .single()
-    if (error || !created) {
-      form.setError('root', { message: error?.message ?? 'Falha ao salvar.' })
-      return
-    }
+    if (error || !created) throw error ?? new Error('Contato não retornado')
     router.push(`/leads/${created.id}`)
     router.refresh()
+    } catch {
+      form.setError('root', { message: 'Não foi possível salvar o contato. Confira os dados e tente novamente.' })
+    }
   }
 
   return (
@@ -120,12 +123,12 @@ export function LeadForm() {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="proximo_retorno"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email (opcional)</FormLabel>
+              <FormLabel>Próximo retorno (opcional)</FormLabel>
               <FormControl>
-                <Input type="email" {...field} />
+                <Input type="date" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,27 +136,26 @@ export function LeadForm() {
         />
         <FormField
           control={form.control}
-          name="status"
+          name="nota_retorno"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {LEAD_STATUSES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>Nota do retorno (opcional)</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Ex: Ligar para confirmar orçamento" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email (opcional)</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -197,26 +199,27 @@ export function LeadForm() {
         />
         <FormField
           control={form.control}
-          name="proximo_retorno"
+          name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Próximo retorno (opcional)</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="nota_retorno"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nota do retorno (opcional)</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Ex: Ligar para confirmar orçamento" />
-              </FormControl>
+              <FormLabel>Etapa</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {LEAD_STATUSES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

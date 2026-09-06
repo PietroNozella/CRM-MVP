@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { APP_TIME_ZONE } from '@/lib/dates'
@@ -29,23 +29,28 @@ export function NotesTimeline({
   const [texto, setTexto] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!texto.trim()) return
+    if (!texto.trim() || saving) return
     setSaving(true)
     setError(null)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('notes')
-      .insert({ lead_id: leadId, texto: texto.trim() })
-    setSaving(false)
-    if (error) {
-      setError(error.message)
-      return
+    setSaved(false)
+    try {
+      const { error } = await createClient().from('notes')
+        .insert({ lead_id: leadId, texto: texto.trim() })
+      if (error) throw error
+      setTexto('')
+      setSaved(true)
+      router.refresh()
+    } catch {
+      setError('Não foi possível salvar a anotação. Seu texto foi mantido; tente novamente.')
+    } finally {
+      setSaving(false)
+      requestAnimationFrame(() => inputRef.current?.focus())
     }
-    setTexto('')
-    router.refresh()
   }
 
   return (
@@ -56,17 +61,21 @@ export function NotesTimeline({
         </label>
         <textarea
           id="nova-nota"
+          ref={inputRef}
+          disabled={saving}
+          maxLength={5000}
           rows={3}
           value={texto}
-          onChange={(e) => setTexto(e.target.value)}
+          onChange={(e) => { setTexto(e.target.value); setSaved(false) }}
           placeholder="Ex: Cliente pediu retorno na segunda de manhã"
-          className="w-full rounded-md border bg-background p-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+          className="w-full scroll-mt-4 rounded-md border bg-background p-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-60"
         />
         <Button type="submit" disabled={saving || !texto.trim()} className="min-h-11">
           {saving ? 'Salvando anotação…' : 'Salvar anotação'}
         </Button>
       </form>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      <p role="status" className="text-sm text-muted-foreground">{saved ? 'Anotação salva.' : ''}</p>
       {initialNotes.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Nenhuma anotação ainda.

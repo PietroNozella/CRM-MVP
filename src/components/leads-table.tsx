@@ -18,11 +18,11 @@ import { whatsappMessage, formatPhoneBR, whatsappLink } from '@/lib/site'
 import { todayISO } from '@/lib/dates'
 
 function whatsappPhoneUrl(whatsapp: string) {
-  return whatsappLink(whatsapp) ?? '#'
+  return whatsappLink(whatsapp) ?? undefined
 }
 
 function whatsappUrl(lead: Lead) {
-  return whatsappLink(lead.whatsapp, whatsappMessage(lead.nome)) ?? '#'
+  return whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
 }
 
 function formatDateBR(iso: string) {
@@ -41,17 +41,17 @@ export function RetornoCell({ lead }: { lead: Lead }) {
   const overdue = lead.proximo_retorno < today
   const isToday = lead.proximo_retorno === today
   return (
-    <span>
+    <div>
       <Badge variant={overdue ? 'destructive' : isToday ? 'default' : 'secondary'}>
         {overdue ? 'Atrasado ' : isToday ? 'Hoje ' : ''}
         {formatDateBR(lead.proximo_retorno)}
       </Badge>
       {lead.nota_retorno && (
-        <span className="block text-xs text-muted-foreground mt-1 max-w-40 truncate">
+        <span className="block text-sm text-muted-foreground mt-1 break-words md:max-w-48">
           {lead.nota_retorno}
         </span>
       )}
-    </span>
+    </div>
   )
 }
 
@@ -68,12 +68,12 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
           <TableHead>Nome</TableHead>
           <TableHead>WhatsApp</TableHead>
           <TableHead className="hidden lg:table-cell">Email</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Etapa</TableHead>
           <TableHead className="hidden md:table-cell">Interesse</TableHead>
           <TableHead className="hidden lg:table-cell">Valor</TableHead>
           <TableHead className="hidden lg:table-cell">Origem</TableHead>
           <TableHead>Retorno</TableHead>
-          <TableHead></TableHead>
+          <TableHead><span className="sr-only">Ações</span></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -106,7 +106,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
             </TableCell>
             <TableCell className="hidden lg:table-cell">{lead.email ?? <Dash />}</TableCell>
             <TableCell>
-              <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} />
+              <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} leadName={lead.nome} />
             </TableCell>
             <TableCell className="hidden md:table-cell">{lead.interesse ?? <Dash />}</TableCell>
             <TableCell className="hidden lg:table-cell">
@@ -121,16 +121,17 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
               <RetornoCell lead={lead} />
             </TableCell>
             <TableCell>
-              <Button size="sm" variant="outline" asChild>
+              {whatsappUrl(lead) ? <Button size="sm" variant="outline" asChild>
                 <a
-                  href={whatsappUrl(lead)}
+                  href={whatsappUrl(lead)!}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Chamar ${lead.nome} no WhatsApp`}
                 >
                   <MessageCircle className="h-4 w-4 mr-1 text-green-600" />
                   Chamar
                 </a>
-              </Button>
+              </Button> : <Button asChild variant="outline"><Link href={`/leads/${lead.id}#dados-contato`}>Corrigir telefone</Link></Button>}
             </TableCell>
           </TableRow>
         ))}

@@ -14,23 +14,25 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    })
-    setLoading(false)
-    if (error) {
-      setError('Email ou senha inválidos.')
-      return
+    try {
+      const { error } = await createClient().auth.signInWithPassword({ email: email.trim(), password })
+      if (error) {
+        setError(error.code === 'invalid_credentials' ? 'Email ou senha inválidos.' : error.status === 429 ? 'Muitas tentativas. Aguarde um pouco e tente novamente.' : 'Não foi possível entrar agora. Verifique sua conexão e tente novamente.')
+        return
+      }
+      router.replace('/')
+      router.refresh()
+    } catch {
+      setError('Não foi possível entrar agora. Verifique sua conexão e tente novamente.')
+    } finally {
+      setLoading(false)
     }
-    router.push('/')
-    router.refresh()
   }
 
   return (
@@ -60,12 +62,13 @@ export function LoginForm() {
               <Input
                 id="login-password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <Button type="button" variant="ghost" aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)} className="mt-1 px-0">{showPassword ? 'Ocultar senha' : 'Mostrar senha'}</Button>
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>

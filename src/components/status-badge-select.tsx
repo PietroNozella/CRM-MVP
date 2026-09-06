@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { LeadStatus } from '@/types'
 import { LEAD_STATUSES } from '@/lib/pipeline'
@@ -26,26 +27,42 @@ const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
 export function StatusBadgeSelect({
   leadId,
   currentStatus,
+  leadName,
 }: {
   leadId: string
   currentStatus: LeadStatus
+  leadName?: string
 }) {
   const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
 
   async function onStatusChange(value: LeadStatus) {
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('leads')
-      .update({ status: value })
-      .eq('id', leadId)
-    if (!error) router.refresh()
+    if (saving || value === currentStatus) return
+    setSaving(true)
+    setError(null)
+    setSaved(false)
+    try {
+      const { error } = await createClient().from('leads')
+        .update({ status: value }).eq('id', leadId).select('id').single()
+      if (error) throw error
+      setSaved(true)
+      router.refresh()
+    } catch {
+      setError('Não foi possível mudar a etapa. Tente novamente.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
-    <Select value={currentStatus} onValueChange={onStatusChange}>
+    <div className="min-w-0">
+    <Select value={currentStatus} onValueChange={onStatusChange} disabled={saving}>
       <SelectTrigger
+        aria-label={leadName ? `Etapa de ${leadName}` : 'Etapa do contato'}
         className={cn(
-          'h-auto min-w-0 border-0 p-1.5 focus:ring-0 focus:ring-offset-0',
+          'min-h-11 min-w-0 px-3 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           STATUS_BADGE_CLASSES[currentStatus]
         )}
       >
@@ -59,5 +76,8 @@ export function StatusBadgeSelect({
         ))}
       </SelectContent>
     </Select>
+    <span role="status" className="sr-only">{saving ? 'Salvando etapa…' : saved ? 'Etapa atualizada.' : ''}</span>
+    {error && <p role="alert" className="mt-1 max-w-56 text-sm text-destructive">{error}</p>}
+    </div>
   )
 }

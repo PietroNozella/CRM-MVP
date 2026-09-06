@@ -6,7 +6,7 @@ import { LeadEditForm } from '@/components/lead-edit-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
-import { whatsappMessage, whatsappLink } from '@/lib/site'
+import { whatsappMessage, whatsappLink, formatPhoneBR } from '@/lib/site'
 
 export default async function LeadDetailPage({
   params,
@@ -38,7 +38,8 @@ export default async function LeadDetailPage({
       </Button>
       <Card>
         <CardHeader>
-          <CardTitle>{lead.nome}</CardTitle>
+          <h1 className="break-words text-2xl font-semibold">{lead.nome}</h1>
+          <p className="text-sm text-muted-foreground">{formatPhoneBR(lead.whatsapp)}</p>
         </CardHeader>
         <CardContent>
           {whatsappHref ? (
@@ -69,9 +70,9 @@ export default async function LeadDetailPage({
           <NotesTimeline leadId={lead.id} initialNotes={notes ?? []} />
         )}
       </div>
-      <Card>
+      <Card id="dados-contato" className="scroll-mt-4">
         <CardHeader>
-          <CardTitle className="text-base">Dados do contato</CardTitle>
+          <CardTitle className="text-base">Atendimento e dados do contato</CardTitle>
         </CardHeader>
         <CardContent>
           <LeadEditForm lead={lead} />

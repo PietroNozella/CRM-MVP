@@ -29,9 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:p-3 focus:outline">Pular para o conteúdo</a>
         <div className="flex min-h-dvh flex-col md:flex-row">
           <Sidebar />
-          <main id="conteudo" className="min-w-0 flex-1 p-4 md:p-6">{children}</main>
+          <main id="conteudo" tabIndex={-1} className="min-w-0 flex-1 p-4 md:p-6">{children}</main>
         </div>
       </body>
     </html>
