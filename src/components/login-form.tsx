@@ -54,7 +54,7 @@ export function LoginForm() {
       <section className="flex items-center justify-center p-6 sm:p-10 lg:p-14">
         <div className="w-full max-w-sm">
           <Brand className="mb-10 text-primary lg:hidden" />
-          <p className="eyebrow">Acesso seguro</p>
+          <p className="eyebrow">Hora de atender</p>
           <h1 className="mt-3 break-words font-display text-4xl font-semibold">Entre no {SITE_NAME}</h1>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">Retome sua agenda e continue as conversas importantes.</p>
           <form onSubmit={onSubmit} className="mt-9 space-y-5">

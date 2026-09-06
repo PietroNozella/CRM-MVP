@@ -28,7 +28,7 @@ export default function UIReview({ searchParams }: { searchParams: { view?: stri
   const view = searchParams.view ?? 'today'
   const empty = searchParams.empty === '1'
   return <>
-    <PageHeader index="01" title={view === 'today' ? 'Hoje' : view === 'contacts' ? 'Contatos' : view === 'kanban' ? 'Funil' : view === 'new' ? 'Novo contato' : view === 'edit' ? leads[0].nome : 'Importar contatos'} description="Prévia temporária com dados fictícios — revisão visual, sem salvar alterações." />
+    <PageHeader title={view === 'today' ? 'Hoje' : view === 'contacts' ? 'Contatos' : view === 'kanban' ? 'Funil' : view === 'new' ? 'Novo contato' : view === 'edit' ? leads[0].nome : 'Importar contatos'} description="Prévia temporária com dados fictícios — revisão visual, sem salvar alterações." />
     {view === 'today' && <><WhoToCall overdue={empty ? [] : leads.slice(0, 2)} today={leads.slice(2, 3)} fresh={[]} counts={{ overdue: empty ? 0 : 2, today: 1, fresh: 0 }} hasAny /><DashboardCards stats={{ total: 24, byStatus: { novo: 10, em_atendimento: 8, em_negociacao: 4, fechado: 2 } }} /></>}
     {view === 'contacts' && <><LeadsFilters initialStatus="novo" /><div className="hidden overflow-hidden rounded-lg border bg-card xl:block"><LeadsTable leads={empty ? [] : leads} /></div><LeadsCards leads={empty ? [] : leads} /></>}
     {view === 'kanban' && <KanbanBoard initialLeads={empty ? [] : leads} />}

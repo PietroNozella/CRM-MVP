@@ -252,7 +252,7 @@ export function CsvImport() {
           }}
         />
         <p className="mt-2 text-xs leading-5 text-muted-foreground">
-          Exportado do Excel/Planilhas (aceita `;` ou `,`). Nome + WhatsApp obrigatórios.
+          Vale CSV do Excel ou do Planilhas, com `;` ou `,`. Nome e WhatsApp são obrigatórios.
         </p>
       </div>
 
@@ -322,7 +322,7 @@ export function CsvImport() {
           </Button>
           {!canImport && (
             <p className="text-xs text-muted-foreground">
-              Mapeie ao menos Nome e WhatsApp para importar.
+              Diga o que é cada coluna: Nome e WhatsApp são obrigatórios.
             </p>
           )}
         </>

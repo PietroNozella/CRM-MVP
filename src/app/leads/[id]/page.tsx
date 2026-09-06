@@ -35,7 +35,6 @@ export default async function LeadDetailPage({
   return (
     <div>
       <PageHeader
-        index="02.1"
         title={lead.nome}
         description={formatPhoneBR(lead.whatsapp)}
         actions={

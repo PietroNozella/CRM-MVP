@@ -178,7 +178,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               ))}
               {board[s.value].length === 0 && (
                 <p className="text-xs text-muted-foreground px-1">
-                  Nenhum contato nesta etapa
+                  Etapa vazia
                 </p>
               )}
             </div>

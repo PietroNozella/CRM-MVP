@@ -101,9 +101,8 @@ export default async function LeadsPage({
   return (
     <div>
       <PageHeader
-        index="02"
         title="Contatos"
-        description="Toda relação comercial, com contexto e próximo passo visíveis."
+        description="Todo mundo que já procurou você — e o próximo passo de cada um."
         actions={<Button asChild><Link href="/leads/novo"><Plus aria-hidden="true" />Novo contato</Link></Button>}
       />
       <LeadsFilters

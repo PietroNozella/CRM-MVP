@@ -80,7 +80,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         {leads.length === 0 && (
           <TableRow>
             <TableCell colSpan={9} className="py-10 text-center text-muted-foreground">
-              Nenhum contato encontrado. Limpe os filtros ou adicione um contato.
+              Nada por aqui. Ajuste os filtros ou cadastre um contato.
             </TableCell>
           </TableRow>
         )}

@@ -67,7 +67,7 @@ export function NotesTimeline({
           rows={3}
           value={texto}
           onChange={(e) => { setTexto(e.target.value); setSaved(false) }}
-          placeholder="Ex: Cliente pediu retorno na segunda de manhã"
+          placeholder="Ex: voltar segunda de manhã com o orçamento"
           className="w-full scroll-mt-4 rounded-md border border-input bg-background p-3 text-base focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         />
         <Button type="submit" disabled={saving || !texto.trim()} className="min-h-11">
@@ -78,7 +78,7 @@ export function NotesTimeline({
       <p role="status" className="text-sm text-muted-foreground">{saved ? 'Anotação salva.' : ''}</p>
       {initialNotes.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nenhuma anotação ainda.
+          Nenhuma anotação. Registre o que foi combinado.
         </p>
       ) : (
         <div className="relative space-y-3 pl-5 before:absolute before:bottom-4 before:left-1.5 before:top-4 before:w-px before:bg-border">

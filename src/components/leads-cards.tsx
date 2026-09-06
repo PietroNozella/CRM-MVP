@@ -13,7 +13,7 @@ export function LeadsCards({ leads }: { leads: Lead[] }) {
   if (leads.length === 0) {
     return (
       <p className="py-10 text-center text-sm text-muted-foreground xl:hidden">
-        Nenhum contato encontrado. Limpe os filtros ou adicione um contato.
+        Nada por aqui. Ajuste os filtros ou cadastre um contato.
       </p>
     )
   }

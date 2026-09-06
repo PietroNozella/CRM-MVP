@@ -57,9 +57,8 @@ export default async function DashboardPage() {
   return (
     <div>
       <PageHeader
-        index="01"
         title="Hoje"
-        description="Priorize retornos, preserve o contexto e mantenha cada conversa em movimento."
+        description="Quem precisa de retorno, em ordem. Comece pelo topo."
       />
       <WhoToCall
         overdue={overdueRes.data ?? []}
@@ -71,7 +70,7 @@ export default async function DashboardPage() {
       <DashboardCards stats={stats} />
       <details className="mt-8 border-t border-border pt-4">
         <summary className="min-h-11 cursor-pointer py-3 font-mono text-xs font-medium uppercase tracking-[0.08em]">
-          Ver resultados e origens
+          Resultados e origens
         </summary>
         <DashboardMetrics leads={leads ?? []} />
       </details>

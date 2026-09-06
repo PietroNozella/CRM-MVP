@@ -25,7 +25,7 @@ function CallRow({ lead }: { lead: CallItem }) {
           {lead.nome}
         </Link>
         <p className="mt-1 text-sm text-muted-foreground break-words">
-          {lead.nota_retorno || 'Primeiro contato ou retorno a combinar'}
+          {lead.nota_retorno || 'Conversa nova — combine o próximo passo'}
         </p>
         {lead.proximo_retorno && <p className="mt-2 font-mono text-xs text-muted-foreground">Retorno: {lead.proximo_retorno.split('-').reverse().join('/')}</p>}
       </div>
@@ -62,9 +62,9 @@ export function WhoToCall({
       <Card className="mb-6 border-l-4 border-l-accent">
         <CardContent className="pt-6 md:pt-6">
           <h2 className="font-display text-3xl font-semibold">Toda conversa começa com um contato.</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Cadastre o primeiro e mantenha o próximo passo por perto.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Cadastre o primeiro e saiba quem chamar todo dia.</p>
           <Button asChild className="mt-3 min-h-11">
-            <Link href="/leads/novo">Novo contato</Link>
+            <Link href="/leads/novo">Cadastrar contato</Link>
           </Button>
         </CardContent>
       </Card>
@@ -76,7 +76,7 @@ export function WhoToCall({
       index: '01',
       title: 'Atrasados',
       count: counts.overdue,
-      empty: 'Nenhum retorno atrasado.',
+      empty: 'Nenhum atraso. Bom sinal.',
       items: overdue,
       href: '/leads?retorno=atrasados',
     },
@@ -84,7 +84,7 @@ export function WhoToCall({
       index: '02',
       title: 'Retornos de hoje',
       count: counts.today,
-      empty: 'Nenhum retorno para hoje.',
+      empty: 'Hoje está livre de retornos.',
       items: today,
       href: '/leads?retorno=hoje',
     },
@@ -92,7 +92,7 @@ export function WhoToCall({
       index: '03',
       title: 'Novos sem retorno',
       count: counts.fresh,
-      empty: 'Nenhum contato novo sem retorno.',
+      empty: 'Nenhum contato novo esperando.',
       items: fresh,
       href: '/leads?status=novo&retorno=sem_retorno',
     },

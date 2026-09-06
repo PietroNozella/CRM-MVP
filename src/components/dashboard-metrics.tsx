@@ -63,7 +63,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
         <CardHeader className="border-b">
           <p className="section-index">02 / AQUISIÇÃO</p>
           <CardTitle className="mt-2 text-sm font-semibold">
-            Origens (top 5)
+            De onde vêm os contatos
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-5 md:pt-6">

@@ -13,7 +13,7 @@ export default async function FunilPage() {
 
   return (
     <div>
-      <PageHeader index="03" title="Funil" description="Visualize o avanço e mova cada contato para a próxima etapa." />
+      <PageHeader title="Funil" description="Arraste para a etapa certa. Contato parado é venda perdida." />
       <KanbanBoard initialLeads={leads ?? []} />
     </div>
   )
