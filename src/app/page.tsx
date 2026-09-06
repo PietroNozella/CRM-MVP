@@ -7,13 +7,14 @@ export default async function DashboardPage() {
 
   if (error) throw error
 
+  const byStatus: Record<string, number> = {}
+  for (const l of leads ?? []) {
+    byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
+  }
+
   const stats = {
     total: leads?.length ?? 0,
-    novo: leads?.filter((l) => l.status === 'novo').length ?? 0,
-    em_atendimento:
-      leads?.filter((l) => l.status === 'em_atendimento').length ?? 0,
-    em_negociacao: leads?.filter((l) => l.status === 'em_negociacao').length ?? 0,
-    fechado: leads?.filter((l) => l.status === 'fechado').length ?? 0,
+    byStatus,
   }
 
   return (

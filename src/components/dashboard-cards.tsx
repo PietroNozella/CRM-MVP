@@ -1,26 +1,21 @@
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { LEAD_STATUSES } from '@/lib/pipeline'
 
 interface DashboardStats {
   total: number
-  novo: number
-  em_atendimento: number
-  em_negociacao: number
-  fechado: number
+  byStatus: Record<string, number>
 }
 
 export function DashboardCards({ stats }: { stats: DashboardStats }) {
   const cards = [
     { label: 'Total de Contatos', value: stats.total, href: '/leads' },
-    { label: 'Novos', value: stats.novo, href: '/leads?status=novo' },
-    {
-      label: 'Em Atendimento',
-      value: stats.em_atendimento,
-      href: '/leads?status=em_atendimento',
-    },
-    { label: 'Em Negociação', value: stats.em_negociacao, href: '/leads?status=em_negociacao' },
-    { label: 'Fechados', value: stats.fechado, href: '/leads?status=fechado' },
+    ...LEAD_STATUSES.map((s) => ({
+      label: s.label,
+      value: stats.byStatus[s.value] ?? 0,
+      href: `/leads?status=${s.value}`,
+    })),
   ]
 
   return (

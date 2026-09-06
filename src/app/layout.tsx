@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "CRM",
-  description: "CRM simples para pequenos negócios",
+  title: process.env.NEXT_PUBLIC_APP_NAME ?? 'CRM',
+  description: 'CRM simples para pequenos negócios',
 };
 
 export default function RootLayout({

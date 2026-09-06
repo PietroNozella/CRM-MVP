@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { LeadStatus } from '@/types'
+import { LEAD_STATUSES } from '@/lib/pipeline'
 import {
   Select,
   SelectContent,
@@ -11,13 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-
-const STATUS_LABELS: Record<LeadStatus, string> = {
-  novo: 'Novo',
-  em_atendimento: 'Em Atendimento',
-  em_negociacao: 'Em Negociação',
-  fechado: 'Fechado',
-}
 
 const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
   novo: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400',
@@ -58,9 +52,9 @@ export function StatusBadgeSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {(Object.keys(STATUS_LABELS) as LeadStatus[]).map((status) => (
-          <SelectItem key={status} value={status}>
-            {STATUS_LABELS[status]}
+        {LEAD_STATUSES.map((status) => (
+          <SelectItem key={status.value} value={status.value}>
+            {status.label}
           </SelectItem>
         ))}
       </SelectContent>

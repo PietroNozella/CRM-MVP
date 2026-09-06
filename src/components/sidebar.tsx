@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LayoutDashboard, Users, UserPlus } from 'lucide-react'
+import { SITE_NAME } from '@/lib/site'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -15,7 +16,7 @@ export function Sidebar() {
   const pathname = usePathname()
   return (
     <aside className="w-64 border-r bg-card p-4 flex flex-col gap-2">
-      <h2 className="font-semibold text-lg px-3 mb-4">CRM</h2>
+      <h2 className="font-semibold text-lg px-3 mb-4">{SITE_NAME}</h2>
       {nav.map(({ href, label, icon: Icon }) => (
         <Button
           key={href}

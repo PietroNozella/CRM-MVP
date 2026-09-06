@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { LEAD_STATUSES } from '@/lib/pipeline'
 
 const schema = z.object({
   nome: z.string().min(2, 'Nome obrigatório'),
@@ -130,13 +131,11 @@ export function LeadForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {['novo', 'em_atendimento', 'em_negociacao', 'fechado'].map(
-                    (s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    )
-                  )}
+                  {LEAD_STATUSES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

@@ -1,3 +1,9 @@
+-- Instalacao do zero: rode este arquivo inteiro no SQL Editor do Supabase
+-- do cliente (projeto novo). Bancos existentes: rode apenas os arquivos
+-- em supabase/migrations/ na ordem de data.
+--
+-- Modelo: 1 banco por cliente (single-tenant). Sem multi-tenant.
+
 -- Tabela leads
 CREATE TABLE leads (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -7,10 +13,12 @@ CREATE TABLE leads (
   status TEXT NOT NULL DEFAULT 'novo' CHECK (status IN ('novo', 'em_atendimento', 'em_negociacao', 'fechado')),
   interesse TEXT,
   valor_maximo NUMERIC,
+  source TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tabela imoveis
+-- Tabela imoveis (legado do nicho imobiliario, fora do menu; manter para
+-- nao quebrar bancos existentes, remover quando nenhum cliente usar)
 CREATE TABLE imoveis (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   titulo TEXT NOT NULL,
@@ -24,10 +32,9 @@ CREATE TABLE imoveis (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- RLS: MVP single-tenant temporário. As policies abaixo são abertas para não
--- quebrar o app sem auth. NÃO usar em produção multi-cliente.
--- Próximo passo (multi-tenant): adicionar account_id + policies por conta.
--- Ver supabase/migrations/*_generalize_status.sql para o funil geral.
+-- RLS: instalacao single-tenant (1 empresa por banco). Policies abertas para
+-- o app funcionar sem login. Se o cliente pedir login depois, troque por
+-- policies com auth.uid() — ver Supabase Auth docs.
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE imoveis ENABLE ROW LEVEL SECURITY;
 

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
+import { whatsappMessage } from '@/lib/site'
 
 function formatPhone(whatsapp: string) {
   const digits = whatsapp.replace(/\D/g, '')
@@ -33,9 +34,7 @@ function whatsappPhoneUrl(whatsapp: string) {
 function whatsappUrl(lead: Lead) {
   const numero = lead.whatsapp.replace(/\D/g, '')
   const fullNumero = numero.startsWith('55') ? numero : `55${numero}`
-  const msg = encodeURIComponent(
-    `Olá ${lead.nome}, obrigado pelo contato! Como posso ajudar?`
-  )
+  const msg = encodeURIComponent(whatsappMessage(lead.nome))
   return `https://wa.me/${fullNumero}?text=${msg}`
 }
 

@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { LEAD_STATUSES } from '@/lib/pipeline'
 
 interface LeadsFiltersProps {
   initialQ?: string
@@ -67,10 +68,11 @@ export function LeadsFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="novo">Novo</SelectItem>
-            <SelectItem value="em_atendimento">Em Atendimento</SelectItem>
-            <SelectItem value="em_negociacao">Em Negociação</SelectItem>
-            <SelectItem value="fechado">Fechado</SelectItem>
+            {LEAD_STATUSES.map((s) => (
+              <SelectItem key={s.value} value={s.value}>
+                {s.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
