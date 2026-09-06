@@ -113,11 +113,22 @@ function parseCSV(text: string): string[][] {
   return rows
 }
 
+function normStatus(raw: string): string {
+  // "Em Atendimento" -> em_atendimento ; "visita"(legado) -> em_negociacao
+  const v = norm(raw).replace(/\s+/g, '_')
+  if (v === 'visita') return 'em_negociacao'
+  return VALID_STATUS.has(v as never) ? v : 'novo'
+}
+
 function parseValor(raw: string): number | null {
   if (!raw) return null
-  // pt-BR: "1.234,56" -> 1234.56 ; "99.9" -> 99.9
+  // pt-BR: "1.234,56" -> 1234.56 ; "1.234" (milhar) -> 1234 ; "99.9" -> 99.9
   let v = raw.replace(/[R$\s]/g, '')
-  if (v.includes(',')) v = v.replace(/\./g, '').replace(',', '.')
+  if (v.includes(',')) {
+    v = v.replace(/\./g, '').replace(',', '.')
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(v)) {
+    v = v.replace(/\./g, '')
+  }
   const n = Number(v)
   return v !== '' && !Number.isNaN(n) && n > 0 ? n : null
 }
@@ -179,12 +190,12 @@ export function CsvImport() {
           skipped++
           continue
         }
-        const status = norm(rec.status ?? '')
+        const status = normStatus(rec.status ?? '')
         payload.push({
           nome: rec.nome.trim(),
           whatsapp: rec.whatsapp.trim(),
           email: rec.email?.trim() || null,
-          status: VALID_STATUS.has(status as never) ? status : 'novo',
+          status,
           interesse: rec.interesse?.trim() || null,
           valor_maximo: rec.valor_maximo ? parseValor(rec.valor_maximo) : null,
           source: rec.source?.trim() || 'csv',

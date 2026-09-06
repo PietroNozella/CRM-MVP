@@ -4,12 +4,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { LEAD_STATUSES } from '@/lib/pipeline'
-import type { Lead, LeadStatus } from '@/types'
+import type { LeadStatus } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 
-type Board = Record<LeadStatus, Lead[]>
+type KanbanLead = {
+  id: string
+  nome: string
+  status: LeadStatus
+  interesse: string | null
+}
 
-function group(leads: Lead[]): Board {
+type Board = Record<LeadStatus, KanbanLead[]>
+
+function group(leads: KanbanLead[]): Board {
   const board = {} as Board
   for (const s of LEAD_STATUSES) board[s.value] = []
   for (const l of leads) {
@@ -18,41 +25,50 @@ function group(leads: Lead[]): Board {
   return board
 }
 
-export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
+export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
   const [board, setBoard] = useState<Board>(() => group(initialLeads))
   const [dragId, setDragId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
+  // Salva primeiro, atualiza o estado de forma imutavel depois.
+  // Sem otimismo: evita divergencia tela/banco e dispensa rollback.
   async function moveTo(leadId: string, to: LeadStatus) {
-    let moved: Lead | undefined
-    setBoard((prev) => {
-      const next = { ...prev } as Board
-      for (const s of LEAD_STATUSES) {
-        const idx = next[s.value].findIndex((l) => l.id === leadId)
-        if (idx >= 0) {
-          const [lead] = next[s.value].splice(idx, 1)
-          if (s.value === to) {
-            next[s.value].splice(idx, 0, lead)
-          } else {
-            moved = { ...lead, status: to }
-            next[to] = [...next[to], moved]
-          }
-          break
-        }
+    if (saving) return
+    let lead: KanbanLead | undefined
+    for (const s of LEAD_STATUSES) {
+      const found = board[s.value].filter((l) => l.id === leadId)[0]
+      if (found) {
+        lead = found
+        break
       }
-      return next
-    })
-    if (!moved) return
+    }
+    if (!lead || lead.status === to) return
+
     setSaving(true)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('leads')
-      .update({ status: to })
-      .eq('id', leadId)
-    setSaving(false)
-    if (error) {
-      // reverte em caso de falha
-      setBoard(group(initialLeads))
+    setError(null)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('leads')
+        .update({ status: to })
+        .eq('id', leadId)
+        .select('id')
+        .single()
+      if (error) throw error
+
+      setBoard((prev) => {
+        const next = { ...prev } as Board
+        for (const s of LEAD_STATUSES) {
+          next[s.value] = prev[s.value].filter((l) => l.id !== leadId)
+        }
+        next[to] = [...next[to], { ...lead, status: to }]
+        return next
+      })
+    } catch {
+      setError('Não foi possível mover o card. Tente de novo.')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -61,6 +77,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
       {saving && (
         <p className="text-xs text-muted-foreground mb-2">Salvando...</p>
       )}
+      {error && <p className="text-sm text-destructive mb-2">{error}</p>}
       <div className="flex gap-4 overflow-x-auto pb-4">
         {LEAD_STATUSES.map((s) => (
           <div

@@ -14,30 +14,14 @@ import { Badge } from '@/components/ui/badge'
 import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
-import { whatsappMessage } from '@/lib/site'
-
-function formatPhone(whatsapp: string) {
-  const digits = whatsapp.replace(/\D/g, '')
-  if (digits.length === 11) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
-  }
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
-  }
-  return whatsapp
-}
+import { whatsappMessage, formatPhoneBR, whatsappLink } from '@/lib/site'
 
 function whatsappPhoneUrl(whatsapp: string) {
-  const digits = whatsapp.replace(/\D/g, '')
-  const numero = digits.startsWith('55') ? digits : `55${digits}`
-  return `https://wa.me/${numero}`
+  return whatsappLink(whatsapp) ?? '#'
 }
 
 function whatsappUrl(lead: Lead) {
-  const numero = lead.whatsapp.replace(/\D/g, '')
-  const fullNumero = numero.startsWith('55') ? numero : `55${numero}`
-  const msg = encodeURIComponent(whatsappMessage(lead.nome))
-  return `https://wa.me/${fullNumero}?text=${msg}`
+  return whatsappLink(lead.whatsapp, whatsappMessage(lead.nome)) ?? '#'
 }
 
 function EmptyCell() {
@@ -107,7 +91,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                {formatPhone(lead.whatsapp)}
+                {formatPhoneBR(lead.whatsapp)}
               </a>
             </TableCell>
             <TableCell>{lead.email ?? <EmptyCell />}</TableCell>

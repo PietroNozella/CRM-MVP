@@ -55,3 +55,5 @@ ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all for notes" ON notes FOR ALL USING (true) WITH CHECK (true);
 
 CREATE INDEX IF NOT EXISTS leads_proximo_retorno_idx ON leads (proximo_retorno);
+CREATE INDEX IF NOT EXISTS leads_created_id_idx ON leads (created_at DESC, id DESC);
+CREATE INDEX IF NOT EXISTS notes_lead_created_idx ON notes (lead_id, created_at DESC);

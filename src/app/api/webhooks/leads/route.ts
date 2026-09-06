@@ -3,62 +3,73 @@ import { createAdminClient } from '@/lib/supabase/admin'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Webhook-Secret',
 }
 
-function isAuthorized(request: Request) {
+function jsonError(error: string, status: number) {
+  return new Response(JSON.stringify({ error }), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  })
+}
+
+function checkAuth(request: Request): Response | null {
   const secret = process.env.LEADS_WEBHOOK_SECRET
-  // Sem segredo configurado: permite (dev local). Em produção, configure.
-  if (!secret) return true
+  // Sem segredo a captura fica indisponivel (fail-closed, inclusive local).
+  // Dev local: defina qualquer valor no .env.local.
+  if (!secret) return jsonError('Captura indisponível', 503)
 
   const auth = request.headers.get('authorization')
-  if (auth === `Bearer ${secret}`) return true
+  if (auth === `Bearer ${secret}`) return null
 
   const fallback = request.headers.get('x-webhook-secret')
-  return fallback === secret
+  if (fallback === secret) return null
+
+  return jsonError('Unauthorized', 401)
 }
 
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    })
+  const authError = checkAuth(request)
+  if (authError) return authError
+
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return jsonError('Invalid JSON', 400)
+  }
+
+  const { name, email, phone, source } =
+    (body as Record<string, unknown>) ?? {}
+
+  if (
+    typeof name !== 'string' ||
+    !name.trim() ||
+    typeof phone !== 'string' ||
+    !phone.trim()
+  ) {
+    return jsonError('name e phone são obrigatórios', 400)
   }
 
   try {
-    const body = await request.json()
-    const { name, email, phone, source } = body
-
-    if (!name?.trim() || !phone?.trim()) {
-      return new Response(
-        JSON.stringify({ error: 'name e phone são obrigatórios' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        }
-      )
-    }
-
     const supabase = createAdminClient()
     const insertData: Record<string, unknown> = {
       nome: name.trim(),
       whatsapp: phone.trim(),
-      email: email?.trim() || null,
+      email: typeof email === 'string' && email.trim() ? email.trim() : null,
       status: 'novo',
       interesse: null,
       valor_maximo: null,
     }
-    const sourceVal = source?.trim()
-    if (sourceVal) insertData.source = sourceVal
+    if (typeof source === 'string' && source.trim()) {
+      insertData.source = source.trim()
+    }
 
     const { error } = await supabase.from('leads').insert(insertData)
 
     if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      })
+      console.error('webhook leads insert failed')
+      return jsonError('Falha ao salvar contato', 500)
     }
 
     return new Response(JSON.stringify({ success: true }), {
@@ -66,10 +77,8 @@ export async function POST(request: Request) {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     })
   } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    })
+    console.error('webhook leads unexpected error')
+    return jsonError('Falha ao salvar contato', 500)
   }
 }
 

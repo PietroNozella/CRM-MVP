@@ -9,3 +9,31 @@ export function whatsappMessage(nome: string) {
   if (template) return template.replace('{nome}', nome)
   return `Olá ${nome}, obrigado pelo contato! Como posso ajudar?`
 }
+
+// Normaliza para wa.me: 10-11 digitos ganham DDI 55; com DDI mantem.
+// Evita confundir DDD 55 (ex: 55 9xxxx) com DDI.
+export function normalizeBrazilPhone(value: string): string | null {
+  const digits = value.replace(/\D/g, '')
+  if (/^\d{10,11}$/.test(digits)) return `55${digits}`
+  if (/^55\d{10,11}$/.test(digits)) return digits
+  return null
+}
+
+export function formatPhoneBR(value: string) {
+  const digits = value.replace(/\D/g, '')
+  const local = digits.startsWith('55') ? digits.slice(2) : digits
+  if (local.length === 11) {
+    return `(${local.slice(0, 2)}) ${local.slice(2, 7)}-${local.slice(7)}`
+  }
+  if (local.length === 10) {
+    return `(${local.slice(0, 2)}) ${local.slice(2, 6)}-${local.slice(6)}`
+  }
+  return value
+}
+
+export function whatsappLink(phone: string, message?: string) {
+  const numero = normalizeBrazilPhone(phone)
+  if (!numero) return null
+  const base = `https://wa.me/${numero}`
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base
+}

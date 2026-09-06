@@ -5,7 +5,7 @@ export default async function FunilPage() {
   const supabase = await createClient()
   const { data: leads, error } = await supabase
     .from('leads')
-    .select('*')
+    .select('id,nome,status,interesse')
     .order('created_at', { ascending: false })
 
   if (error) throw error
