@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const corsHeaders = {
@@ -12,6 +13,14 @@ function jsonError(error: string, status: number) {
     headers: { 'Content-Type': 'application/json', ...corsHeaders },
   })
 }
+
+// Mesmo piso do banco (CHECKs): nome 2-150, whatsapp 8-25.
+const captureSchema = z.object({
+  name: z.string().trim().min(2).max(150),
+  phone: z.string().trim().min(8).max(25),
+  email: z.string().trim().email().max(254).nullish(),
+  source: z.string().trim().max(500).nullish(),
+})
 
 function checkAuth(request: Request): Response | null {
   const secret = process.env.LEADS_WEBHOOK_SECRET
@@ -39,31 +48,23 @@ export async function POST(request: Request) {
     return jsonError('Invalid JSON', 400)
   }
 
-  const { name, email, phone, source } =
-    (body as Record<string, unknown>) ?? {}
-
-  if (
-    typeof name !== 'string' ||
-    !name.trim() ||
-    typeof phone !== 'string' ||
-    !phone.trim()
-  ) {
-    return jsonError('name e phone são obrigatórios', 400)
+  const parsed = captureSchema.safeParse(body)
+  if (!parsed.success) {
+    return jsonError('Dados inválidos', 400)
   }
+  const { name, email, phone, source } = parsed.data
 
   try {
     const supabase = createAdminClient()
     const insertData: Record<string, unknown> = {
-      nome: name.trim(),
-      whatsapp: phone.trim(),
-      email: typeof email === 'string' && email.trim() ? email.trim() : null,
+      nome: name,
+      whatsapp: phone,
+      email: email || null,
       status: 'novo',
       interesse: null,
       valor_maximo: null,
     }
-    if (typeof source === 'string' && source.trim()) {
-      insertData.source = source.trim()
-    }
+    if (source) insertData.source = source
 
     const { error } = await supabase.from('leads').insert(insertData)
 

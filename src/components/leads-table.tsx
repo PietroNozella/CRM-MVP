@@ -15,6 +15,7 @@ import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
 import { whatsappMessage, formatPhoneBR, whatsappLink } from '@/lib/site'
+import { todayISO } from '@/lib/dates'
 
 function whatsappPhoneUrl(whatsapp: string) {
   return whatsappLink(whatsapp) ?? '#'
@@ -28,13 +29,6 @@ function EmptyCell() {
   return (
     <span className="text-muted-foreground">Não informado</span>
   )
-}
-
-function todayISO() {
-  const d = new Date()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${m}-${day}`
 }
 
 function formatDateBR(iso: string) {

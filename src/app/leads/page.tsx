@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { LeadsTable } from '@/components/leads-table'
 import { LeadsFilters } from '@/components/leads-filters'
 import { LEAD_STATUSES } from '@/lib/pipeline'
+import { todayISO, dayStartUTC, nextDayStartUTC } from '@/lib/dates'
 
 const VALID_STATUS = new Set(LEAD_STATUSES.map((s) => s.value))
 
@@ -48,17 +49,16 @@ export default async function LeadsPage({
     query = query.or(`nome.ilike.${pattern},whatsapp.ilike.${pattern}`)
   }
   if (dataInicio && isDateISO(dataInicio)) {
-    query = query.gte('created_at', `${dataInicio}T00:00:00.000Z`)
+    query = query.gte('created_at', dayStartUTC(dataInicio))
   }
   if (dataFim && isDateISO(dataFim)) {
-    query = query.lte('created_at', `${dataFim}T23:59:59.999Z`)
+    query = query.lt('created_at', nextDayStartUTC(dataFim))
   }
   if (retorno === 'agendados') {
     query = query.not('proximo_retorno', 'is', null)
   }
   if (retorno === 'atrasados') {
-    const today = new Date().toISOString().slice(0, 10)
-    query = query.lt('proximo_retorno', today)
+    query = query.lt('proximo_retorno', todayISO())
   }
 
   const { data: leads, error } = await query

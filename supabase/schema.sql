@@ -7,12 +7,12 @@
 -- Tabela leads
 CREATE TABLE leads (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  nome TEXT NOT NULL,
-  whatsapp TEXT NOT NULL,
+  nome TEXT NOT NULL CHECK (char_length(btrim(nome)) BETWEEN 2 AND 150),
+  whatsapp TEXT NOT NULL CHECK (char_length(btrim(whatsapp)) BETWEEN 8 AND 25),
   email TEXT,
   status TEXT NOT NULL DEFAULT 'novo' CHECK (status IN ('novo', 'em_atendimento', 'em_negociacao', 'fechado')),
   interesse TEXT,
-  valor_maximo NUMERIC,
+  valor_maximo NUMERIC CHECK (valor_maximo IS NULL OR valor_maximo >= 0),
   source TEXT,
   proximo_retorno DATE,
   nota_retorno TEXT,
@@ -47,7 +47,7 @@ CREATE POLICY "Allow all for imoveis" ON imoveis FOR ALL USING (true) WITH CHECK
 CREATE TABLE notes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   lead_id UUID NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
-  texto TEXT NOT NULL,
+  texto TEXT NOT NULL CHECK (char_length(btrim(texto)) BETWEEN 1 AND 5000),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
