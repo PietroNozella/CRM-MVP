@@ -69,7 +69,7 @@ export function LeadsFilters({
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="novo">Novo</SelectItem>
             <SelectItem value="em_atendimento">Em Atendimento</SelectItem>
-            <SelectItem value="visita">Visita</SelectItem>
+            <SelectItem value="em_negociacao">Em Negociação</SelectItem>
             <SelectItem value="fechado">Fechado</SelectItem>
           </SelectContent>
         </Select>

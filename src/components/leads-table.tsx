@@ -34,7 +34,7 @@ function whatsappUrl(lead: Lead) {
   const numero = lead.whatsapp.replace(/\D/g, '')
   const fullNumero = numero.startsWith('55') ? numero : `55${numero}`
   const msg = encodeURIComponent(
-    `Olá ${lead.nome}, vi seu interesse em um imóvel e gostaria de conversar!`
+    `Olá ${lead.nome}, obrigado pelo contato! Como posso ajudar?`
   )
   return `https://wa.me/${fullNumero}?text=${msg}`
 }
@@ -55,7 +55,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
           <TableHead>Email</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Interesse</TableHead>
-          <TableHead>Valor Máx.</TableHead>
+          <TableHead>Valor</TableHead>
           <TableHead>Origem</TableHead>
           <TableHead></TableHead>
         </TableRow>

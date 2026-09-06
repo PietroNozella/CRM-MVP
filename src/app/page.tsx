@@ -12,7 +12,7 @@ export default async function DashboardPage() {
     novo: leads?.filter((l) => l.status === 'novo').length ?? 0,
     em_atendimento:
       leads?.filter((l) => l.status === 'em_atendimento').length ?? 0,
-    visita: leads?.filter((l) => l.status === 'visita').length ?? 0,
+    em_negociacao: leads?.filter((l) => l.status === 'em_negociacao').length ?? 0,
     fechado: leads?.filter((l) => l.status === 'fechado').length ?? 0,
   }
 

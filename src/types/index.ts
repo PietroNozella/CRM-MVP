@@ -1,4 +1,4 @@
-export type LeadStatus = 'novo' | 'em_atendimento' | 'visita' | 'fechado'
+export type LeadStatus = 'novo' | 'em_atendimento' | 'em_negociacao' | 'fechado'
 
 export interface Lead {
   id: string

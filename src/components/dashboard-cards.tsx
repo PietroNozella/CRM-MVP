@@ -6,20 +6,20 @@ interface DashboardStats {
   total: number
   novo: number
   em_atendimento: number
-  visita: number
+  em_negociacao: number
   fechado: number
 }
 
 export function DashboardCards({ stats }: { stats: DashboardStats }) {
   const cards = [
-    { label: 'Total de Leads', value: stats.total, href: '/leads' },
+    { label: 'Total de Contatos', value: stats.total, href: '/leads' },
     { label: 'Novos', value: stats.novo, href: '/leads?status=novo' },
     {
       label: 'Em Atendimento',
       value: stats.em_atendimento,
       href: '/leads?status=em_atendimento',
     },
-    { label: 'Visita', value: stats.visita, href: '/leads?status=visita' },
+    { label: 'Em Negociação', value: stats.em_negociacao, href: '/leads?status=em_negociacao' },
     { label: 'Fechados', value: stats.fechado, href: '/leads?status=fechado' },
   ]
 

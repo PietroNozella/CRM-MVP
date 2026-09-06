@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "CRM Imobiliário",
-  description: "MVP CRM Imobiliário",
+  title: "CRM",
+  description: "CRM simples para pequenos negócios",
 };
 
 export default function RootLayout({

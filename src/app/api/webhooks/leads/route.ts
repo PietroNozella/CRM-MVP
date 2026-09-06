@@ -6,7 +6,26 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
+function isAuthorized(request: Request) {
+  const secret = process.env.LEADS_WEBHOOK_SECRET
+  // Sem segredo configurado: permite (dev local). Em produção, configure.
+  if (!secret) return true
+
+  const auth = request.headers.get('authorization')
+  if (auth === `Bearer ${secret}`) return true
+
+  const fallback = request.headers.get('x-webhook-secret')
+  return fallback === secret
+}
+
 export async function POST(request: Request) {
+  if (!isAuthorized(request)) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    })
+  }
+
   try {
     const body = await request.json()
     const { name, email, phone, source } = body

@@ -4,7 +4,7 @@ CREATE TABLE leads (
   nome TEXT NOT NULL,
   whatsapp TEXT NOT NULL,
   email TEXT,
-  status TEXT NOT NULL DEFAULT 'novo' CHECK (status IN ('novo', 'em_atendimento', 'visita', 'fechado')),
+  status TEXT NOT NULL DEFAULT 'novo' CHECK (status IN ('novo', 'em_atendimento', 'em_negociacao', 'fechado')),
   interesse TEXT,
   valor_maximo NUMERIC,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -24,7 +24,10 @@ CREATE TABLE imoveis (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- RLS (opcional para MVP)
+-- RLS: MVP single-tenant temporário. As policies abaixo são abertas para não
+-- quebrar o app sem auth. NÃO usar em produção multi-cliente.
+-- Próximo passo (multi-tenant): adicionar account_id + policies por conta.
+-- Ver supabase/migrations/*_generalize_status.sql para o funil geral.
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE imoveis ENABLE ROW LEVEL SECURITY;
 

@@ -37,7 +37,7 @@ export default async function LeadsPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Leads</h1>
+      <h1 className="text-2xl font-bold mb-6">Contatos</h1>
       <LeadsFilters
         key={`${params.q ?? ''}-${params.status ?? ''}-${params.data_inicio ?? ''}-${params.data_fim ?? ''}`}
         initialQ={typeof params.q === 'string' ? params.q : ''}

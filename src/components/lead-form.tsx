@@ -27,7 +27,7 @@ const schema = z.object({
   nome: z.string().min(2, 'Nome obrigatório'),
   whatsapp: z.string().min(10, 'WhatsApp inválido'),
   email: z.string().email().optional().or(z.literal('')),
-  status: z.enum(['novo', 'em_atendimento', 'visita', 'fechado']),
+  status: z.enum(['novo', 'em_atendimento', 'em_negociacao', 'fechado']),
   interesse: z.string().optional(),
   valor_maximo: z.optional(z.number().positive()),
 })
@@ -130,7 +130,7 @@ export function LeadForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {['novo', 'em_atendimento', 'visita', 'fechado'].map(
+                  {['novo', 'em_atendimento', 'em_negociacao', 'fechado'].map(
                     (s) => (
                       <SelectItem key={s} value={s}>
                         {s}
@@ -148,9 +148,9 @@ export function LeadForm() {
           name="interesse"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Interesse (opcional)</FormLabel>
+              <FormLabel>Interesse / serviço (opcional)</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Ex: Apto 3 quartos" />
+                <Input {...field} placeholder="Ex: Corte + barba, revisão, orçamento" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -161,7 +161,7 @@ export function LeadForm() {
           name="valor_maximo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Valor máximo (opcional)</FormLabel>
+              <FormLabel>Valor (opcional)</FormLabel>
               <FormControl>
                 <Input
                   type="number"
