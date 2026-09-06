@@ -24,7 +24,12 @@ export default async function DashboardPage() {
     <div>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       <DashboardCards stats={stats} />
-      <DashboardMetrics leads={leads ?? []} />
+      <details className="mt-6">
+        <summary className="flex min-h-11 cursor-pointer items-center font-medium">
+          Ver resultados e origens
+        </summary>
+        <DashboardMetrics leads={leads ?? []} />
+      </details>
     </div>
   )
 }

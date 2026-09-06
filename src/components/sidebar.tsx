@@ -38,14 +38,16 @@ export function Sidebar() {
   if (pathname === '/login') return null
 
   return (
-    <aside className="w-64 border-r bg-card p-4 flex flex-col gap-2">
-      <h2 className="font-semibold text-lg px-3 mb-4">{SITE_NAME}</h2>
+    <aside className="w-full border-b bg-card p-3 md:w-64 md:shrink-0 md:border-b-0 md:border-r md:p-4 flex flex-col gap-2">
+      <h2 className="font-semibold text-lg px-3 mb-2 md:mb-4">{SITE_NAME}</h2>
+      <nav aria-label="Navegação principal" className="flex flex-row gap-2 overflow-x-auto md:flex-col md:overflow-visible">
       {nav.map(({ href, label, icon: Icon }) => (
         <Button
           key={href}
           variant={pathname === href ? 'secondary' : 'ghost'}
           asChild
-          className="justify-start"
+          className="justify-start shrink-0"
+          aria-current={pathname === href ? 'page' : undefined}
         >
           <Link href={href}>
             <Icon className="mr-2 h-4 w-4" />
@@ -53,13 +55,20 @@ export function Sidebar() {
           </Link>
         </Button>
       ))}
-      <div className="mt-auto pt-4 border-t">
+      </nav>
+      <div className="mt-auto pt-4 border-t hidden md:block">
         {email && (
           <p className="text-xs text-muted-foreground px-3 mb-2 truncate">
             {email}
           </p>
         )}
         <Button variant="ghost" onClick={onLogout} className="justify-start w-full">
+          <LogOut className="mr-2 h-4 w-4" />
+          Sair
+        </Button>
+      </div>
+      <div className="md:hidden">
+        <Button variant="ghost" size="sm" onClick={onLogout} className="w-full">
           <LogOut className="mr-2 h-4 w-4" />
           Sair
         </Button>

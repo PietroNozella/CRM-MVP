@@ -25,31 +25,40 @@ function whatsappUrl(lead: Lead) {
   return whatsappLink(lead.whatsapp, whatsappMessage(lead.nome)) ?? '#'
 }
 
-function EmptyCell() {
-  return (
-    <span className="text-muted-foreground">Não informado</span>
-  )
-}
-
 function formatDateBR(iso: string) {
   const [y, m, d] = iso.split('-')
   return `${d}/${m}/${y}`
 }
 
+function Dash() {
+  return <span className="text-muted-foreground">—</span>
+}
+
 function RetornoCell({ lead }: { lead: Lead }) {
-  if (!lead.proximo_retorno) return <EmptyCell />
+  if (!lead.proximo_retorno)
+    return <span className="text-muted-foreground">Sem retorno</span>
   const today = todayISO()
   const overdue = lead.proximo_retorno < today
   const isToday = lead.proximo_retorno === today
   return (
-    <span title={lead.nota_retorno ?? undefined}>
+    <span>
       <Badge variant={overdue ? 'destructive' : isToday ? 'default' : 'secondary'}>
         {overdue ? 'Atrasado ' : isToday ? 'Hoje ' : ''}
         {formatDateBR(lead.proximo_retorno)}
       </Badge>
+      {lead.nota_retorno && (
+        <span className="block text-xs text-muted-foreground mt-1 max-w-40 truncate">
+          {lead.nota_retorno}
+        </span>
+      )}
     </span>
   )
 }
+
+const money = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+})
 
 export function LeadsTable({ leads }: { leads: Lead[] }) {
   return (
@@ -58,16 +67,23 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         <TableRow>
           <TableHead>Nome</TableHead>
           <TableHead>WhatsApp</TableHead>
-          <TableHead>Email</TableHead>
+          <TableHead className="hidden lg:table-cell">Email</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Interesse</TableHead>
-          <TableHead>Valor</TableHead>
-          <TableHead>Origem</TableHead>
+          <TableHead className="hidden md:table-cell">Interesse</TableHead>
+          <TableHead className="hidden lg:table-cell">Valor</TableHead>
+          <TableHead className="hidden lg:table-cell">Origem</TableHead>
           <TableHead>Retorno</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
+        {leads.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={9} className="py-10 text-center text-muted-foreground">
+              Nenhum contato encontrado. Limpe os filtros ou adicione um contato.
+            </TableCell>
+          </TableRow>
+        )}
         {leads.map((lead) => (
           <TableRow key={lead.id}>
             <TableCell>
@@ -88,19 +104,19 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                 {formatPhoneBR(lead.whatsapp)}
               </a>
             </TableCell>
-            <TableCell>{lead.email ?? <EmptyCell />}</TableCell>
+            <TableCell className="hidden lg:table-cell">{lead.email ?? <Dash />}</TableCell>
             <TableCell>
               <StatusBadgeSelect leadId={lead.id} currentStatus={lead.status} />
             </TableCell>
-            <TableCell>{lead.interesse ?? <EmptyCell />}</TableCell>
-            <TableCell>
-              {lead.valor_maximo ? (
-                `R$ ${lead.valor_maximo}`
+            <TableCell className="hidden md:table-cell">{lead.interesse ?? <Dash />}</TableCell>
+            <TableCell className="hidden lg:table-cell">
+              {lead.valor_maximo != null ? (
+                money.format(lead.valor_maximo)
               ) : (
-                <EmptyCell />
+                <Dash />
               )}
             </TableCell>
-            <TableCell>{lead.source ?? <EmptyCell />}</TableCell>
+            <TableCell className="hidden lg:table-cell">{lead.source ?? <Dash />}</TableCell>
             <TableCell>
               <RetornoCell lead={lead} />
             </TableCell>

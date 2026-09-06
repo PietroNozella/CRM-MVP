@@ -11,7 +11,7 @@ export function whatsappMessage(nome: string) {
 }
 
 // Normaliza para wa.me: 10-11 digitos ganham DDI 55; com DDI mantem.
-// Evita confundir DDD 55 (ex: 55 9xxxx) com DDI.
+// Compara por comprimento (nao por prefixo) para nao confundir DDD 55.
 export function normalizeBrazilPhone(value: string): string | null {
   const digits = value.replace(/\D/g, '')
   if (/^\d{10,11}$/.test(digits)) return `55${digits}`
@@ -21,7 +21,7 @@ export function normalizeBrazilPhone(value: string): string | null {
 
 export function formatPhoneBR(value: string) {
   const digits = value.replace(/\D/g, '')
-  const local = digits.startsWith('55') ? digits.slice(2) : digits
+  const local = /^55\d{10,11}$/.test(digits) ? digits.slice(2) : digits
   if (local.length === 11) {
     return `(${local.slice(0, 2)}) ${local.slice(2, 7)}-${local.slice(7)}`
   }

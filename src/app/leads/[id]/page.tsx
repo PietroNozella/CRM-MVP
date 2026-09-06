@@ -23,11 +23,13 @@ export default async function LeadDetailPage({
   if (error) throw error
   if (!lead) notFound()
 
-  const { data: notes } = await supabase
+  const { data: notes, error: notesError } = await supabase
     .from('notes')
     .select('*')
     .eq('lead_id', params.id)
     .order('created_at', { ascending: false })
+
+  const whatsappHref = whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -39,32 +41,42 @@ export default async function LeadDetailPage({
           <CardTitle>{lead.nome}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button size="sm" variant="outline" asChild>
-            <a
-              href={
-                whatsappLink(lead.whatsapp, whatsappMessage(lead.nome)) ?? '#'
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MessageCircle className="h-4 w-4 mr-1 text-green-600" />
-              Chamar no WhatsApp
-            </a>
-          </Button>
+          {whatsappHref ? (
+            <Button asChild className="min-h-11 w-full sm:w-auto">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="h-4 w-4 mr-2 text-green-100" />
+                Chamar no WhatsApp
+              </a>
+            </Button>
+          ) : (
+            <p role="status" className="text-sm text-muted-foreground">
+              Corrija o WhatsApp em “Dados do contato” para chamar.
+            </p>
+          )}
         </CardContent>
       </Card>
+      <div>
+        <h2 className="text-lg font-semibold mb-3">Anotações</h2>
+        {notesError ? (
+          <p role="alert" className="text-sm text-destructive">
+            Não foi possível carregar o histórico. Recarregue a página.
+          </p>
+        ) : (
+          <NotesTimeline leadId={lead.id} initialNotes={notes ?? []} />
+        )}
+      </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Editar contato</CardTitle>
+          <CardTitle className="text-base">Dados do contato</CardTitle>
         </CardHeader>
         <CardContent>
           <LeadEditForm lead={lead} />
         </CardContent>
       </Card>
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Anotações</h2>
-        <NotesTimeline leadId={lead.id} initialNotes={notes ?? []} />
-      </div>
     </div>
   )
 }

@@ -66,7 +66,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
         return next
       })
     } catch {
-      setError('Não foi possível mover o card. Tente de novo.')
+      setError('Não foi possível mudar a etapa. Tente novamente.')
     } finally {
       setSaving(false)
     }
@@ -74,10 +74,10 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
 
   return (
     <div>
-      {saving && (
-        <p className="text-xs text-muted-foreground mb-2">Salvando...</p>
-      )}
-      {error && <p className="text-sm text-destructive mb-2">{error}</p>}
+      <div className="min-h-6 mb-2">
+        <p role="status" className="text-xs text-muted-foreground">{saving ? 'Salvando etapa…' : ''}</p>
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      </div>
       <div className="flex gap-4 overflow-x-auto pb-4">
         {LEAD_STATUSES.map((s) => (
           <div
@@ -124,7 +124,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               ))}
               {board[s.value].length === 0 && (
                 <p className="text-xs text-muted-foreground px-1">
-                  Arraste cards para cá
+                  Nenhum contato nesta etapa
                 </p>
               )}
             </div>

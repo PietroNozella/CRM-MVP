@@ -57,8 +57,9 @@ export function LeadsFilters({
   return (
     <div className="flex flex-wrap items-end gap-4 mb-6">
       <div className="flex-1 min-w-[200px]">
-        <label className="text-sm font-medium mb-2 block">Buscar</label>
+        <label htmlFor="busca-contatos" className="text-sm font-medium mb-2 block">Buscar</label>
         <Input
+          id="busca-contatos"
           placeholder="Nome ou WhatsApp"
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -66,9 +67,9 @@ export function LeadsFilters({
         />
       </div>
       <div className="w-[180px]">
-        <label className="text-sm font-medium mb-2 block">Status</label>
+        <label htmlFor="filtro-etapa" className="text-sm font-medium mb-2 block">Status</label>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger>
+          <SelectTrigger id="filtro-etapa">
             <SelectValue placeholder="Todos" />
           </SelectTrigger>
           <SelectContent>
@@ -82,8 +83,9 @@ export function LeadsFilters({
         </Select>
       </div>
       <div className="w-[165px] relative">
-        <label className="text-sm font-medium mb-2 block">Data início</label>
+        <label htmlFor="filtro-data-inicio" className="text-sm font-medium mb-2 block">Data início</label>
         <Input
+          id="filtro-data-inicio"
           type="date"
           value={dataInicio}
           onChange={(e) => setDataInicio(e.target.value)}
@@ -91,8 +93,9 @@ export function LeadsFilters({
         />
       </div>
       <div className="w-[165px]">
-        <label className="text-sm font-medium mb-2 block">Data fim</label>
+        <label htmlFor="filtro-data-fim" className="text-sm font-medium mb-2 block">Data fim</label>
         <Input
+          id="filtro-data-fim"
           type="date"
           value={dataFim}
           onChange={(e) => setDataFim(e.target.value)}
@@ -100,9 +103,9 @@ export function LeadsFilters({
         />
       </div>
       <div className="w-[165px]">
-        <label className="text-sm font-medium mb-2 block">Retorno</label>
+        <label htmlFor="filtro-retorno" className="text-sm font-medium mb-2 block">Retorno</label>
         <Select value={retorno} onValueChange={setRetorno}>
-          <SelectTrigger>
+          <SelectTrigger id="filtro-retorno">
             <SelectValue placeholder="Todos" />
           </SelectTrigger>
           <SelectContent>

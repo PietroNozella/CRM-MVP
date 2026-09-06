@@ -3,18 +3,19 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { APP_TIME_ZONE } from '@/lib/dates'
 import type { Note } from '@/types'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 
+const dateTime = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: APP_TIME_ZONE,
+  dateStyle: 'short',
+  timeStyle: 'short',
+})
+
 function formatDateTime(iso: string) {
-  const d = new Date(iso)
-  const day = String(d.getDate()).padStart(2, '0')
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const h = String(d.getHours()).padStart(2, '0')
-  const min = String(d.getMinutes()).padStart(2, '0')
-  return `${day}/${m}/${d.getFullYear()} ${h}:${min}`
+  return dateTime.format(new Date(iso))
 }
 
 export function NotesTimeline({
@@ -49,17 +50,23 @@ export function NotesTimeline({
 
   return (
     <div className="space-y-4">
-      <form onSubmit={onSubmit} className="flex gap-2">
-        <Input
-          placeholder="Ex: Cliente pediu retorno na segunda de manhã"
+      <form onSubmit={onSubmit} className="space-y-2">
+        <label htmlFor="nova-nota" className="text-sm font-medium">
+          O que foi combinado?
+        </label>
+        <textarea
+          id="nova-nota"
+          rows={3}
           value={texto}
           onChange={(e) => setTexto(e.target.value)}
+          placeholder="Ex: Cliente pediu retorno na segunda de manhã"
+          className="w-full rounded-md border bg-background p-3 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
         />
-        <Button type="submit" disabled={saving || !texto.trim()}>
-          Anotar
+        <Button type="submit" disabled={saving || !texto.trim()} className="min-h-11">
+          {saving ? 'Salvando anotação…' : 'Salvar anotação'}
         </Button>
       </form>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {initialNotes.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Nenhuma anotação ainda.
@@ -69,7 +76,7 @@ export function NotesTimeline({
           {initialNotes.map((n) => (
             <Card key={n.id}>
               <CardContent className="pt-4">
-                <p className="text-sm">{n.texto}</p>
+                <p className="text-sm whitespace-pre-wrap break-words">{n.texto}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {formatDateTime(n.created_at)}
                 </p>

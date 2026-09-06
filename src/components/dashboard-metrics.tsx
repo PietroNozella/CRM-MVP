@@ -32,7 +32,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-medium">
-            Conversão — {pct(fechados, total)} fechados ({fechados}/{total})
+            Contatos fechados — {pct(fechados, total)} ({fechados}/{total})
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">

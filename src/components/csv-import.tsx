@@ -245,18 +245,18 @@ export function CsvImport() {
         <>
           <div className="space-y-2">
             <h2 className="text-sm font-medium">
-              Mapeamento — {fileName} ({rows.length} linhas)
+              Combine as colunas da planilha — {fileName} ({rows.length} linhas)
             </h2>
             {headers.map((h, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <span className="w-40 truncate text-sm font-mono">{h}</span>
+              <div key={i} className="grid gap-2 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
+                <label htmlFor={`coluna-${i}`} className="break-words text-sm font-mono">{h}</label>
                 <Select
                   value={mapping[i] ?? 'ignore'}
                   onValueChange={(v) =>
                     setMapping((m) => ({ ...m, [i]: v }))
                   }
                 >
-                  <SelectTrigger className="w-52">
+                  <SelectTrigger id={`coluna-${i}`} className="min-h-11 w-full sm:w-52">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -297,8 +297,8 @@ export function CsvImport() {
             </Table>
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          {result && <p className="text-sm text-green-700">{result}</p>}
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+          {result && <p role="status" className="text-sm text-green-700">{result}</p>}
           <Button onClick={onImport} disabled={!canImport || importing}>
             {importing ? 'Importando...' : `Importar ${rows.length} linhas`}
           </Button>
@@ -307,6 +307,12 @@ export function CsvImport() {
               Mapeie ao menos Nome e WhatsApp para importar.
             </p>
           )}
+        </>
+      )}
+
+      {headers.length === 0 && (
+        <>
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         </>
       )}
     </div>

@@ -34,7 +34,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center py-10">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>{SITE_NAME}</CardTitle>
@@ -42,24 +42,32 @@ export function LoginForm() {
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Email</label>
+              <label htmlFor="login-email" className="text-sm font-medium mb-2 block">Email</label>
               <Input
+                id="login-email"
+                name="email"
                 type="email"
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Senha</label>
+              <label htmlFor="login-password" className="text-sm font-medium mb-2 block">Senha</label>
               <Input
+                id="login-password"
+                name="password"
                 type="password"
+                autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>

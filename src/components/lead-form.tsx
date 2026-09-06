@@ -102,7 +102,13 @@ export function LeadForm() {
             <FormItem>
               <FormLabel>WhatsApp</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="5511999999999" />
+                <Input
+                  {...field}
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="(11) 99999-9999"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -170,6 +176,8 @@ export function LeadForm() {
               <FormControl>
                 <Input
                   type="number"
+                  inputMode="decimal"
+                  step="0.01"
                   {...field}
                   value={field.value ?? ''}
                   onChange={(e) =>
@@ -215,7 +223,7 @@ export function LeadForm() {
           </p>
         )}
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Salvar
+          {form.formState.isSubmitting ? 'Salvando...' : 'Salvar contato'}
         </Button>
       </form>
     </Form>
