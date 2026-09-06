@@ -75,7 +75,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="relative z-40 w-full shrink-0 bg-[#18201B] text-[#F4F1E9] [&_:focus-visible]:outline-[#F4F1E9] [&_:focus-visible]:ring-[#F4F1E9] md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:flex-col">
+    <aside className="relative z-40 w-full shrink-0 bg-[#182D25] text-[#F4F1E9] [&_:focus-visible]:outline-[#F4F1E9] [&_:focus-visible]:ring-[#F4F1E9] md:sticky md:top-0 md:flex md:h-dvh md:w-56 md:flex-col">
       <div className="flex min-h-16 items-center justify-between border-b border-white/10 px-4 md:min-h-24 md:px-6">
         <Brand className="text-[#F4F1E9]" />
         <details ref={moreRef} className="group relative md:hidden">
@@ -83,7 +83,7 @@ export function Sidebar() {
             <Menu aria-hidden="true" className="h-4 w-4" />
             Menu
           </summary>
-          <nav aria-label="Navegação principal" className="absolute right-0 top-12 grid max-h-[calc(100dvh-5rem)] w-64 gap-1 overflow-y-auto border border-white/10 bg-[#18201B] p-2 shadow-2xl">
+          <nav aria-label="Navegação principal" className="absolute right-0 top-12 grid max-h-[calc(100dvh-5rem)] w-64 gap-1 overflow-y-auto rounded-xl border border-white/10 bg-[#182D25] p-2 shadow-2xl">
             {nav.map(({ href, label, icon: Icon }) => (
               <Button key={href} asChild variant="ghost" className={`justify-start ${isActive(href) ? 'bg-[#F4F1E9] text-[#18201B] hover:bg-[#F4F1E9]' : 'text-[#F4F1E9] hover:bg-white/10 hover:text-white'}`}>
                 <Link href={href} onClick={() => { if (moreRef.current) moreRef.current.open = false }} aria-current={isActive(href) ? 'page' : undefined}>
@@ -101,17 +101,16 @@ export function Sidebar() {
       </div>
 
       <nav aria-label="Navegação principal" className="hidden min-h-0 overflow-y-auto px-4 py-6 md:block">
-        <p className="mb-3 px-3 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-white/65">Operação</p>
+        <p className="mb-3 px-3 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-white/50">Área de trabalho</p>
         <div className="grid gap-1">
           {nav.map(({ href, label, icon: Icon }, index) => (
             <Button
               key={href}
               variant="ghost"
               asChild
-              className={`relative justify-start overflow-hidden px-3 ${isActive(href) ? 'bg-[#F4F1E9] text-[#18201B] hover:bg-[#F4F1E9]' : 'text-[#F4F1E9]/75 hover:bg-white/10 hover:text-white'} ${index === 3 ? 'mt-4' : ''}`}
+              className={`relative justify-start overflow-hidden px-3 text-xs ${isActive(href) ? 'bg-accent text-[#182D25] hover:bg-accent/90' : 'text-[#F4F1E9]/75 hover:bg-white/10 hover:text-white'} ${index === 3 ? 'mt-5' : ''}`}
             >
               <Link href={href} aria-current={isActive(href) ? 'page' : undefined}>
-                {isActive(href) && <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 bg-[#E65A2F]" />}
                 <Icon aria-hidden="true" />
                 {label}
               </Link>

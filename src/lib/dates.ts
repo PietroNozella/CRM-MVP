@@ -16,7 +16,11 @@ function partsInTZ(date: Date) {
 
 // Hoje no fuso do app, formato YYYY-MM-DD (compara com DATE do banco).
 export function todayISO() {
-  const { y, m, d } = partsInTZ(new Date())
+  return dateISOInTimeZone(new Date())
+}
+
+export function dateISOInTimeZone(date: Date | string) {
+  const { y, m, d } = partsInTZ(typeof date === 'string' ? new Date(date) : date)
   return `${y}-${m}-${d}`
 }
 

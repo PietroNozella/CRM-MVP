@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/sidebar";
 
-const barlow = Barlow({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-barlow",
-  display: "swap",
-});
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-barlow-condensed",
+const geist = localFont({
+  src: "./fonts/GeistVF.woff",
+  weight: "100 900",
+  variable: "--font-geist",
   display: "swap",
 });
 const geistMono = localFont({
@@ -35,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${barlow.variable} ${barlowCondensed.variable} ${geistMono.variable} antialiased`}
+        className={`${geist.variable} ${geistMono.variable} antialiased`}
       >
         <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:p-3 focus:outline">Pular para o conteúdo</a>
         <div className="flex min-h-dvh flex-col md:flex-row">

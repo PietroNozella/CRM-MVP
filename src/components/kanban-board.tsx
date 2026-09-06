@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 import type { LeadStatus } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
+import { ContactAvatar } from '@/components/contact-avatar'
 import {
   Select,
   SelectContent,
@@ -106,11 +107,11 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
           <SelectContent>{LEAD_STATUSES.map(stage => <SelectItem key={stage.value} value={stage.value}>{stage.label} ({board[stage.value].length})</SelectItem>)}</SelectContent>
         </Select>
       </div>
-      <div className="gap-4 pb-4 md:flex md:overflow-x-auto">
+      <div className="gap-4 pb-4 md:flex md:overflow-x-auto xl:grid xl:grid-cols-4 xl:overflow-visible">
         {LEAD_STATUSES.map((s, stageIndex) => (
           <div
             key={s.value}
-            className={`${s.value === activeStage ? 'block' : 'hidden'} w-full shrink-0 border-t-2 bg-secondary/40 p-3 md:block md:w-72 ${stageIndex === 0 ? 'border-t-[#2F6B4F]' : stageIndex === 1 ? 'border-t-[#2E5F89]' : stageIndex === 2 ? 'border-t-[#B56C1B]' : 'border-t-[#626761]'}`}
+            className={`${s.value === activeStage ? 'block' : 'hidden'} min-w-0 w-full shrink-0 rounded-2xl border bg-secondary/40 p-3 md:block md:w-72 xl:w-auto`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault()
@@ -118,15 +119,15 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               setDragId(null)
             }}
           >
-            <div className="mb-3 flex items-end justify-between border-b px-1 pb-3">
+            <div className="mb-3 flex items-center justify-between px-1 pt-1">
               <div>
-                <p className="section-index">{String(stageIndex + 1).padStart(2, '0')} / ETAPA</p>
                 <h2 ref={node => { headings.current[s.value] = node }} tabIndex={-1} className="mt-1 rounded text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{s.label}</h2>
               </div>
-              <span className="metric-number text-2xl text-muted-foreground">
+              <span className="flex min-w-8 items-center justify-center rounded-lg bg-card px-2 py-1 text-sm font-semibold tabular-nums">
                 {board[s.value].length}
               </span>
             </div>
+            <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-border" role="img" aria-label={`${board[s.value].length} de ${initialLeads.length} contatos nesta etapa`}><div className={`h-full rounded-full ${stageIndex === 0 ? 'bg-[#78A890]' : stageIndex === 1 ? 'bg-[#5986A6]' : stageIndex === 2 ? 'bg-[#CC9950]' : 'bg-[#205D49]'}`} style={{ width: `${initialLeads.length ? board[s.value].length / initialLeads.length * 100 : 0}%` }} /></div>
             <div className="space-y-2 min-h-10">
               {board[s.value].map((lead) => (
                 <Card
@@ -134,11 +135,13 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                   draggable={!saving}
                   onDragStart={() => setDragId(lead.id)}
                   onDragEnd={() => setDragId(null)}
-                  className={`border-l-2 border-l-primary md:cursor-grab md:active:cursor-grabbing ${
+                  className={`shadow-sm shadow-primary/[0.02] md:cursor-grab md:active:cursor-grabbing ${
                     dragId === lead.id ? 'scale-[0.98] opacity-50' : ''
                   }`}
                 >
                   <CardContent className="p-3 md:p-3">
+                    <div className="mb-2 flex items-center gap-2.5">
+                    <ContactAvatar name={lead.nome} className="size-8 text-[10px]" />
                     <Link
                       href={`/leads/${lead.id}`}
                       className="block break-words text-sm font-semibold hover:underline"
@@ -147,6 +150,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                     >
                       {lead.nome}
                     </Link>
+                    </div>
                     <p className="mt-1 break-words text-sm text-muted-foreground">
                       {lead.interesse ?? 'Sem interesse informado'}
                     </p>

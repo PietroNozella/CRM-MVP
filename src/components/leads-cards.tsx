@@ -8,6 +8,7 @@ import type { Lead } from '@/types'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
 import { RetornoCell } from '@/components/leads-table'
 import { whatsappMessage, whatsappLink } from '@/lib/site'
+import { ContactAvatar } from '@/components/contact-avatar'
 
 export function LeadsCards({ leads }: { leads: Lead[] }) {
   if (leads.length === 0) {
@@ -22,9 +23,11 @@ export function LeadsCards({ leads }: { leads: Lead[] }) {
       {leads.map((lead) => {
         const href = whatsappLink(lead.whatsapp, whatsappMessage(lead.nome))
         return (
-          <Card key={lead.id} className="border-l-2 border-l-primary">
+          <Card key={lead.id} className="shadow-sm shadow-primary/[0.02]">
             <CardContent className="space-y-4 pt-4 md:pt-4">
-              <div className="space-y-2">
+              <div className="flex items-start gap-3">
+                <ContactAvatar name={lead.nome} />
+                <div className="min-w-0 flex-1 space-y-2">
                 <Link
                   href={`/leads/${lead.id}`}
                   className="block break-words text-lg font-semibold tracking-[-0.02em] hover:underline"
@@ -36,6 +39,7 @@ export function LeadsCards({ leads }: { leads: Lead[] }) {
                   currentStatus={lead.status}
                   leadName={lead.nome}
                 />
+                </div>
               </div>
               <RetornoCell lead={lead} />
               <div className="flex gap-2">

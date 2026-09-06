@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { StatusBadgeSelect } from '@/components/status-badge-select'
 import { whatsappMessage, formatPhoneBR, whatsappLink } from '@/lib/site'
 import { todayISO } from '@/lib/dates'
+import { ContactAvatar } from '@/components/contact-avatar'
 
 function whatsappPhoneUrl(whatsapp: string) {
   return whatsappLink(whatsapp) ?? undefined
@@ -38,14 +39,15 @@ export function RetornoCell({ lead }: { lead: Lead }) {
   if (!lead.proximo_retorno)
     return <span className="text-muted-foreground">Sem retorno</span>
   const today = todayISO()
-  const overdue = lead.proximo_retorno < today
-  const isToday = lead.proximo_retorno === today
+  const isClosed = lead.status === 'fechado'
+  const overdue = !isClosed && lead.proximo_retorno < today
+  const isToday = !isClosed && lead.proximo_retorno === today
   return (
     <div>
       <Badge variant={overdue ? 'destructive' : isToday ? 'default' : 'secondary'}>
-        {overdue ? 'Atrasado ' : isToday ? 'Hoje ' : ''}
-        {formatDateBR(lead.proximo_retorno)}
+        {isClosed ? 'Contato fechado' : `${overdue ? 'Atrasado ' : isToday ? 'Hoje ' : ''}${formatDateBR(lead.proximo_retorno)}`}
       </Badge>
+      {isClosed && <span className="mt-1 block text-xs text-muted-foreground">Retorno registrado: {formatDateBR(lead.proximo_retorno)}</span>}
       {lead.nota_retorno && (
         <span className="mt-1 block break-words text-sm text-muted-foreground xl:max-w-56">
           {lead.nota_retorno}
@@ -63,7 +65,7 @@ const money = new Intl.NumberFormat('pt-BR', {
 export function LeadsTable({ leads }: { leads: Lead[] }) {
   return (
     <Table className="min-w-[1040px] 2xl:min-w-[1280px]">
-      <TableHeader>
+      <TableHeader className="bg-secondary/60">
         <TableRow>
           <TableHead>Nome</TableHead>
           <TableHead>WhatsApp</TableHead>
@@ -86,13 +88,17 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         )}
         {leads.map((lead) => (
           <TableRow key={lead.id}>
-            <TableCell className="min-w-40 max-w-64 break-words py-4">
+            <TableCell className="min-w-60 max-w-72 break-words py-4">
+              <div className="flex items-center gap-3">
+              <ContactAvatar name={lead.nome} />
               <Link
                 href={`/leads/${lead.id}`}
-                className="font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline"
+                title={lead.nome}
+                className="line-clamp-2 min-w-0 flex-1 font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline"
               >
                 {lead.nome}
               </Link>
+              </div>
             </TableCell>
             <TableCell className="whitespace-nowrap font-mono text-xs">
               <a

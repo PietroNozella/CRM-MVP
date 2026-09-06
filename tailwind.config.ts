@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
   	extend: {
 		fontFamily: {
-			sans: ['var(--font-barlow)', 'Arial', 'sans-serif'],
-			display: ['var(--font-barlow-condensed)', 'Arial Narrow', 'sans-serif'],
+			sans: ['var(--font-geist)', 'Arial', 'sans-serif'],
+			display: ['var(--font-geist)', 'Arial', 'sans-serif'],
 			mono: ['var(--font-geist-mono)', 'ui-monospace', 'monospace'],
 		},
   		colors: {

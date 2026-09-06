@@ -21,7 +21,7 @@ const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
   em_negociacao:
     'border-[#DAB98B] bg-[#F3E8D3] text-[#7A4A12]',
   fechado:
-    'border-[#CBC8BE] bg-[#EAE6DC] text-[#555C57]',
+    'border-[#ABCABD] bg-[#DDEDE5] text-[#205D49]',
 }
 
 export function StatusBadgeSelect({

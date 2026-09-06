@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { PageHeader } from '@/components/page-header'
-import { WhoToCall } from '@/components/who-to-call'
-import { DashboardCards } from '@/components/dashboard-cards'
+import { DashboardOverview } from '@/components/dashboard-overview'
+import { dashboardMonth } from '@/lib/dashboard'
 import { LeadsFilters } from '@/components/leads-filters'
 import { LeadsTable } from '@/components/leads-table'
 import { LeadsCards } from '@/components/leads-cards'
@@ -23,13 +23,32 @@ const leads: Lead[] = ['Ana Carolina de Albuquerque e Vasconcelos', 'João Mende
   nota_retorno: 'Enviar proposta revisada e confirmar horário da próxima conversa.', created_at: '2026-01-01T12:00:00Z',
 }))
 
-export default function UIReview({ searchParams }: { searchParams: { view?: string; empty?: string } }) {
+export default function UIReview({ searchParams }: { searchParams: { view?: string; empty?: string; mes?: string } }) {
   if (process.env.NODE_ENV !== 'development') notFound()
   const view = searchParams.view ?? 'today'
   const empty = searchParams.empty === '1'
+  if (view === 'today') {
+    const today = todayISO()
+    const { year, month } = dashboardMonth(searchParams.mes, today)
+    const currentMonth = today.slice(0, 7)
+    const demoLeads = Array.from({ length: 32 }, (_, index) => ({
+      ...leads[index % leads.length],
+      id: `demo-${index}`,
+      nome: ['Ana Carolina de Albuquerque e Vasconcelos', 'João Mendes', 'Marina Costa', 'Pedro Lima', 'Beatriz Santos', 'Rafael Oliveira', 'Juliana Ferreira', 'Lucas Ribeiro'][index % 8],
+      status: (['novo', 'em_atendimento', 'em_negociacao', 'fechado'] as const)[index % 10 < 4 ? 0 : index % 10 < 7 ? 1 : index % 10 < 9 ? 2 : 3],
+      source: ['Indicação', 'Instagram', 'Site', 'WhatsApp', null][index % 5],
+      created_at: `${currentMonth}-${String(1 + index % Math.max(1, Number(today.slice(8)))).padStart(2, '0')}T14:00:00Z`,
+      proximo_retorno: index % 4 === 0 ? null : index % 4 === 1 ? today : `${currentMonth}-${index % 4 === 2 ? '01' : '20'}`,
+    }))
+    const demoNotes = Array.from({ length: 18 }, (_, index) => ({
+      id: `demo-note-${index}`, lead_id: `demo-${index}`,
+      texto: ['Proposta enviada. Cliente vai avaliar as condições e retornar com a decisão.', 'Conversamos sobre o projeto. Próximo passo: apresentar as opções na reunião.', 'Cliente confirmou interesse. Preparar a proposta com o escopo combinado.'][index % 3],
+      created_at: `${currentMonth}-${String(1 + index % Math.max(1, Number(today.slice(8)))).padStart(2, '0')}T15:30:00Z`,
+    }))
+    return <><p className="mb-5 rounded-lg border border-dashed px-4 py-3 text-xs text-muted-foreground">Prévia de desenvolvimento · dados fictícios para revisão visual, sem salvar alterações.</p><DashboardOverview leads={empty ? [] : demoLeads} notes={empty ? [] : demoNotes} year={year} month={month} today={today} /></>
+  }
   return <>
     <PageHeader title={view === 'today' ? 'Hoje' : view === 'contacts' ? 'Contatos' : view === 'kanban' ? 'Funil' : view === 'new' ? 'Novo contato' : view === 'edit' ? leads[0].nome : 'Importar contatos'} description="Prévia temporária com dados fictícios — revisão visual, sem salvar alterações." />
-    {view === 'today' && <><WhoToCall overdue={empty ? [] : leads.slice(0, 2)} today={leads.slice(2, 3)} fresh={[]} counts={{ overdue: empty ? 0 : 2, today: 1, fresh: 0 }} hasAny /><DashboardCards stats={{ total: 24, byStatus: { novo: 10, em_atendimento: 8, em_negociacao: 4, fechado: 2 } }} /></>}
     {view === 'contacts' && <><LeadsFilters initialStatus="novo" /><div className="hidden overflow-hidden rounded-lg border bg-card xl:block"><LeadsTable leads={empty ? [] : leads} /></div><LeadsCards leads={empty ? [] : leads} /></>}
     {view === 'kanban' && <KanbanBoard initialLeads={empty ? [] : leads} />}
     {view === 'new' && <LeadForm />}
