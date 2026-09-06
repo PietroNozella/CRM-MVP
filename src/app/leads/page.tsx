@@ -37,6 +37,20 @@ export default async function LeadsPage({
     typeof params.data_fim === 'string' ? params.data_fim : undefined
   const retorno =
     typeof params.retorno === 'string' ? params.retorno : undefined
+  const retornoDia =
+    typeof params.retorno_dia === 'string' && isDateISO(params.retorno_dia)
+      ? params.retorno_dia
+      : undefined
+  function clearDayHref() {
+    const next = new URLSearchParams()
+    for (const [key, value] of Object.entries(params)) {
+      if (typeof value === 'string' && key !== 'retorno_dia' && key !== 'page') {
+        next.set(key, value)
+      }
+    }
+    const qs = next.toString()
+    return qs ? `/leads?${qs}` : '/leads'
+  }
   const requestedPage = Number(params.page)
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1
   const pageSize = 50
@@ -81,10 +95,13 @@ export default async function LeadsPage({
     query = query.lt('proximo_retorno', todayISO())
   }
   if (retorno === 'sem_retorno') query = query.is('proximo_retorno', null)
+  if (retornoDia) {
+    query = query.eq('proximo_retorno', retornoDia).neq('status', 'fechado')
+  }
   if (retorno === 'hoje' || retorno === 'atrasados') {
     query = query.neq('status', 'fechado')
   }
-  if (['hoje', 'atrasados', 'agendados'].includes(retorno ?? '')) {
+  if (['hoje', 'atrasados', 'agendados'].includes(retorno ?? '') || retornoDia) {
     query = query.order('proximo_retorno', { ascending: true }).order('created_at')
   } else {
     query = query.order('created_at', { ascending: retorno === 'sem_retorno' })
@@ -114,6 +131,14 @@ export default async function LeadsPage({
         initialRetorno={typeof params.retorno === 'string' ? params.retorno : 'todos'}
       />
       <p className="mb-3 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground" role="status">{total === 0 ? 'Nenhum resultado' : `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} de ${total} contatos`}</p>
+      {retornoDia && (
+        <p className="mb-3 text-sm">
+          Retorno em {retornoDia.split('-').reverse().join('/')}{' '}
+          <Link href={clearDayHref()} className="text-primary hover:underline">
+            limpar
+          </Link>
+        </p>
+      )}
       <div className="hidden overflow-hidden rounded-lg border bg-card xl:block">
         <LeadsTable leads={leads ?? []} />
       </div>

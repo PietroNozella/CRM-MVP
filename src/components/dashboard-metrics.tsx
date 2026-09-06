@@ -1,4 +1,5 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+﻿import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 
 export interface LeadMetric {
@@ -12,9 +13,56 @@ function pct(part: number, total: number) {
 }
 
 export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
+  return (
+    <div className="mt-4 grid gap-4 xl:grid-cols-2">
+      <FunnelCard leads={leads} />
+      <OriginsCard leads={leads} />
+    </div>
+  )
+}
+
+export function FunnelCard({ leads }: { leads: LeadMetric[] }) {
   const total = leads.length
   const fechados = leads.filter((l) => l.status === 'fechado').length
 
+  return (
+    <Card className="border-t-2 border-t-primary">
+      <CardHeader className="border-b">
+        <p className="section-index">01 / CONVERSÃO</p>
+        <CardTitle className="mt-2 text-sm font-semibold">
+          Contatos fechados — {pct(fechados, total)} ({fechados}/{total})
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 pt-5 md:pt-6">
+        {LEAD_STATUSES.map((s) => {
+          const count = leads.filter((l) => l.status === s.value).length
+          return (
+            <Link
+              key={s.value}
+              href={`/leads?status=${s.value}`}
+              className="block rounded-md p-1 -m-1 hover:bg-muted"
+            >
+              <div className="flex justify-between text-sm mb-1">
+                <span>{s.label}</span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {count} · {pct(count, total)}
+                </span>
+              </div>
+              <div className="h-1.5 overflow-hidden bg-secondary">
+                <div
+                  className="h-full bg-primary transition-all"
+                  style={{ width: pct(count, total) }}
+                />
+              </div>
+            </Link>
+          )
+        })}
+      </CardContent>
+    </Card>
+  )
+}
+
+export function OriginsCard({ leads }: { leads: LeadMetric[] }) {
   const bySource: Record<string, { total: number; fechados: number }> = {}
   for (const l of leads) {
     const key = l.source?.trim() || 'Não informada'
@@ -28,38 +76,7 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
     .slice(0, 5)
 
   return (
-    <div className="mt-4 grid gap-4 xl:grid-cols-2">
-      <Card className="border-t-2 border-t-primary">
-        <CardHeader className="border-b">
-          <p className="section-index">01 / CONVERSÃO</p>
-          <CardTitle className="mt-2 text-sm font-semibold">
-            Contatos fechados — {pct(fechados, total)} ({fechados}/{total})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 pt-5 md:pt-6">
-          {LEAD_STATUSES.map((s) => {
-            const count = leads.filter((l) => l.status === s.value).length
-            return (
-              <div key={s.value}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span>{s.label}</span>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {count} · {pct(count, total)}
-                  </span>
-                </div>
-                <div className="h-1.5 overflow-hidden bg-secondary">
-                  <div
-                    className="h-full bg-primary"
-                    style={{ width: pct(count, total) }}
-                  />
-                </div>
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
-
-      <Card className="border-t-2 border-t-accent">
+    <Card className="border-t-2 border-t-accent">
         <CardHeader className="border-b">
           <p className="section-index">02 / AQUISIÇÃO</p>
           <CardTitle className="mt-2 text-sm font-semibold">
@@ -83,6 +100,5 @@ export function DashboardMetrics({ leads }: { leads: LeadMetric[] }) {
           )}
         </CardContent>
       </Card>
-    </div>
   )
 }
