@@ -34,7 +34,7 @@ function Dash() {
   return <span className="text-muted-foreground">—</span>
 }
 
-function RetornoCell({ lead }: { lead: Lead }) {
+export function RetornoCell({ lead }: { lead: Lead }) {
   if (!lead.proximo_retorno)
     return <span className="text-muted-foreground">Sem retorno</span>
   const today = todayISO()

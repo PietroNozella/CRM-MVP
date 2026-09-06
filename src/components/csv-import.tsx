@@ -167,6 +167,18 @@ export function CsvImport() {
   }
 
   const mappedKeys = useMemo(() => Object.values(mapping), [mapping])
+  const validCount = useMemo(() => {
+    const nameIdx: number[] = []
+    const phoneIdx: number[] = []
+    Object.entries(mapping).forEach(([col, field]) => {
+      if (field === 'nome') nameIdx.push(Number(col))
+      if (field === 'whatsapp') phoneIdx.push(Number(col))
+    })
+    if (!nameIdx.length || !phoneIdx.length) return 0
+    return rows.filter((r) =>
+      nameIdx.some((i) => r[i]?.trim()) && phoneIdx.some((i) => r[i]?.trim())
+    ).length
+  }, [rows, mapping])
   const canImport =
     rows.length > 0 &&
     mappedKeys.includes('nome') &&
@@ -231,6 +243,7 @@ export function CsvImport() {
         <Input
           type="file"
           accept=".csv,text/csv"
+          disabled={importing}
           onChange={(e) => {
             const f = e.target.files?.[0]
             if (f) onFile(f)
@@ -299,8 +312,10 @@ export function CsvImport() {
 
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {result && <p role="status" className="text-sm text-green-700">{result}</p>}
-          <Button onClick={onImport} disabled={!canImport || importing}>
-            {importing ? 'Importando...' : `Importar ${rows.length} linhas`}
+          <Button onClick={onImport} disabled={!canImport || importing} className="min-h-11">
+            {importing
+              ? `Importando...`
+              : `Importar ${validCount} contato${validCount === 1 ? '' : 's'}`}
           </Button>
           {!canImport && (
             <p className="text-xs text-muted-foreground">

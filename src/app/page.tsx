@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { DashboardCards } from '@/components/dashboard-cards'
 import { DashboardMetrics } from '@/components/dashboard-metrics'
+import { WhoToCall } from '@/components/who-to-call'
+import { todayISO } from '@/lib/dates'
+
+const CALL_COLS =
+  'id,nome,whatsapp,status,proximo_retorno,nota_retorno'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -20,9 +25,43 @@ export default async function DashboardPage() {
     byStatus,
   }
 
+  const today = todayISO()
+  const [overdueRes, todayRes, freshRes] = await Promise.all([
+    supabase
+      .from('leads')
+      .select(CALL_COLS)
+      .lt('proximo_retorno', today)
+      .neq('status', 'fechado')
+      .order('proximo_retorno', { ascending: true })
+      .limit(5),
+    supabase
+      .from('leads')
+      .select(CALL_COLS)
+      .eq('proximo_retorno', today)
+      .neq('status', 'fechado')
+      .order('created_at', { ascending: true })
+      .limit(5),
+    supabase
+      .from('leads')
+      .select(CALL_COLS)
+      .eq('status', 'novo')
+      .is('proximo_retorno', null)
+      .order('created_at', { ascending: true })
+      .limit(5),
+  ])
+  if (overdueRes.error) throw overdueRes.error
+  if (todayRes.error) throw todayRes.error
+  if (freshRes.error) throw freshRes.error
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <WhoToCall
+        overdue={overdueRes.data ?? []}
+        today={todayRes.data ?? []}
+        fresh={freshRes.data ?? []}
+        hasAny={stats.total > 0}
+      />
       <DashboardCards stats={stats} />
       <details className="mt-6">
         <summary className="flex min-h-11 cursor-pointer items-center font-medium">

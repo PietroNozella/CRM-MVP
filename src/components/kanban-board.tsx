@@ -6,6 +6,13 @@ import { createClient } from '@/lib/supabase/client'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 import type { LeadStatus } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 type KanbanLead = {
   id: string
@@ -119,6 +126,29 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                     <p className="text-xs text-muted-foreground mt-1">
                       {lead.interesse ?? 'Sem interesse informado'}
                     </p>
+                    <Select
+                      value={lead.status}
+                      disabled={saving}
+                      onValueChange={(v) => moveTo(lead.id, v as LeadStatus)}
+                    >
+                      <SelectTrigger
+                        aria-label={`Etapa de ${lead.nome}`}
+                        className="mt-3 min-h-11"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LEAD_STATUSES.map((stage) => (
+                          <SelectItem
+                            key={stage.value}
+                            value={stage.value}
+                            className="min-h-11"
+                          >
+                            {stage.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </CardContent>
                 </Card>
               ))}

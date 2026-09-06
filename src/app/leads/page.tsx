@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { LeadsTable } from '@/components/leads-table'
+import { LeadsCards } from '@/components/leads-cards'
 import { LeadsFilters } from '@/components/leads-filters'
 import { LEAD_STATUSES } from '@/lib/pipeline'
 import { todayISO, dayStartUTC, nextDayStartUTC } from '@/lib/dates'
@@ -57,6 +58,9 @@ export default async function LeadsPage({
   if (retorno === 'agendados') {
     query = query.not('proximo_retorno', 'is', null)
   }
+  if (retorno === 'hoje') {
+    query = query.eq('proximo_retorno', todayISO())
+  }
   if (retorno === 'atrasados') {
     query = query.lt('proximo_retorno', todayISO())
   }
@@ -76,7 +80,10 @@ export default async function LeadsPage({
         initialDataFim={typeof params.data_fim === 'string' ? params.data_fim : ''}
         initialRetorno={typeof params.retorno === 'string' ? params.retorno : 'todos'}
       />
-      <LeadsTable leads={leads ?? []} />
+      <div className="hidden md:block">
+        <LeadsTable leads={leads ?? []} />
+      </div>
+      <LeadsCards leads={leads ?? []} />
     </div>
   )
 }

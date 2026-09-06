@@ -55,24 +55,28 @@ export function LeadForm() {
 
   async function onSubmit(data: FormData) {
     const supabase = createClient()
-    const { error } = await supabase.from('leads').insert({
-      nome: data.nome,
-      whatsapp: data.whatsapp,
-      email: data.email || null,
-      status: data.status,
-      interesse: data.interesse || null,
-      valor_maximo:
-        data.valor_maximo && !Number.isNaN(data.valor_maximo)
-          ? data.valor_maximo
-          : null,
-      proximo_retorno: data.proximo_retorno || null,
-      nota_retorno: data.nota_retorno || null,
-    })
-    if (error) {
-      form.setError('root', { message: error.message })
+    const { data: created, error } = await supabase
+      .from('leads')
+      .insert({
+        nome: data.nome,
+        whatsapp: data.whatsapp,
+        email: data.email || null,
+        status: data.status,
+        interesse: data.interesse || null,
+        valor_maximo:
+          data.valor_maximo && !Number.isNaN(data.valor_maximo)
+            ? data.valor_maximo
+            : null,
+        proximo_retorno: data.proximo_retorno || null,
+        nota_retorno: data.nota_retorno || null,
+      })
+      .select('id')
+      .single()
+    if (error || !created) {
+      form.setError('root', { message: error?.message ?? 'Falha ao salvar.' })
       return
     }
-    router.push('/leads')
+    router.push(`/leads/${created.id}`)
     router.refresh()
   }
 

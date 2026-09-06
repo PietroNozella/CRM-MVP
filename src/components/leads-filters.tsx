@@ -111,6 +111,7 @@ export function LeadsFilters({
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="agendados">Agendados</SelectItem>
+            <SelectItem value="hoje">Hoje</SelectItem>
             <SelectItem value="atrasados">Atrasados</SelectItem>
           </SelectContent>
         </Select>
