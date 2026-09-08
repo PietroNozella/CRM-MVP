@@ -14,13 +14,7 @@ DROP POLICY IF EXISTS "Allow all for notes" ON notes;
 CREATE POLICY "Authenticated full access for notes"
   ON notes FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- imoveis (legado)
-DROP POLICY IF EXISTS "Allow all for imoveis" ON imoveis;
-CREATE POLICY "Authenticated full access for imoveis"
-  ON imoveis FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
 -- Anonimo perde tudo (service_role nao e afetado).
-REVOKE ALL ON leads, notes, imoveis FROM anon;
+REVOKE ALL ON leads, notes FROM anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON leads TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON notes TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON imoveis TO authenticated;

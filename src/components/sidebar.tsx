@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Users, UserPlus, Upload, SquareKanban, LogOut, Menu, Building2 } from 'lucide-react'
+import { LayoutDashboard, Users, UserPlus, Upload, SquareKanban, LogOut, Menu } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Brand } from '@/components/brand'
 
@@ -12,7 +12,6 @@ const nav = [
   { href: '/', label: 'Hoje', icon: LayoutDashboard },
   { href: '/leads', label: 'Contatos', icon: Users },
   { href: '/funil', label: 'Funil', icon: SquareKanban },
-  { href: '/imoveis', label: 'Imóveis', icon: Building2 },
   { href: '/leads/novo', label: 'Novo contato', icon: UserPlus },
   { href: '/leads/importar', label: 'Importar contatos', icon: Upload },
 ]
@@ -73,8 +72,7 @@ export function Sidebar() {
 
   function isActive(href: string) {
     return pathname === href ||
-      (href === '/leads' && /^\/leads\/[0-9a-f-]+$/i.test(pathname)) ||
-      (href === '/imoveis' && pathname.startsWith('/imoveis/'))
+      (href === '/leads' && /^\/leads\/[0-9a-f-]+$/i.test(pathname))
   }
 
   return (
@@ -111,7 +109,7 @@ export function Sidebar() {
               key={href}
               variant="ghost"
               asChild
-              className={`relative justify-start overflow-hidden px-3 text-xs ${isActive(href) ? 'bg-accent text-brand-deep hover:bg-accent/90' : 'text-brand-cream/75 hover:bg-white/10 hover:text-white'} ${index === 4 ? 'mt-5' : ''}`}
+              className={`relative justify-start overflow-hidden px-3 text-xs ${isActive(href) ? 'bg-accent text-brand-deep hover:bg-accent/90' : 'text-brand-cream/75 hover:bg-white/10 hover:text-white'} ${index === 3 ? 'mt-5' : ''}`}
             >
               <Link href={href} aria-current={isActive(href) ? 'page' : undefined}>
                 <Icon aria-hidden="true" />

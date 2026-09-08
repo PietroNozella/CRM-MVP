@@ -36,7 +36,6 @@ Bancos existentes (atualização, não instalação): rode os arquivos de `supab
 - Marca/WhatsApp: `src/lib/site.ts` ou envs acima.
 - Tipografia: Geist local na interface e nos títulos, Geist Mono nos dados técnicos; configuração em `src/app/layout.tsx` e `tailwind.config.ts`.
 - Etapas do funil: `src/lib/pipeline.ts` (siga os 3 passos comentados no arquivo: tipo, lista+schema, SQL).
-- Rota `/imoveis` é legado imobiliário fora do menu — remover quando nenhum cliente usar.
 
 ## Dev local
 

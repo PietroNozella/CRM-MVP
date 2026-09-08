@@ -20,16 +20,3 @@ export interface Note {
   texto: string
   created_at: string
 }
-
-export interface Imovel {
-  id: string
-  titulo: string
-  preco: number
-  bairro: string
-  quartos: number
-  banheiros: number
-  vagas: number
-  area: number
-  fotos_url: string[]
-  created_at: string
-}
