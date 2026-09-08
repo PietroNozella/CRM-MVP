@@ -7,7 +7,12 @@ export interface LeadMetric {
   source: string | null
 }
 
-const STAGE_COLORS = ['#78A890', '#5986A6', '#CC9950', '#205D49']
+const STAGE_COLORS = [
+  'hsl(var(--pipeline-new))',
+  'hsl(var(--pipeline-active))',
+  'hsl(var(--pipeline-negotiation))',
+  'hsl(var(--pipeline-closed))',
+]
 
 function pct(part: number, total: number) {
   return total ? Math.round((part / total) * 100) : 0
@@ -174,7 +179,7 @@ export function OriginsCard({ leads }: { leads: LeadMetric[] }) {
                 key={name}
                 style={{
                   width: `${(count / leads.length) * 100}%`,
-                  backgroundColor: [...STAGE_COLORS, '#8D9390'][index],
+                  backgroundColor: [...STAGE_COLORS, 'hsl(var(--pipeline-neutral))'][index],
                 }}
               />
             ))}
@@ -185,7 +190,7 @@ export function OriginsCard({ leads }: { leads: LeadMetric[] }) {
                 <span
                   className="size-2.5 shrink-0 rounded-full"
                   style={{
-                    backgroundColor: [...STAGE_COLORS, '#8D9390'][index],
+                    backgroundColor: [...STAGE_COLORS, 'hsl(var(--pipeline-neutral))'][index],
                   }}
                 />
                 <span className="min-w-0 flex-1 break-words font-medium">

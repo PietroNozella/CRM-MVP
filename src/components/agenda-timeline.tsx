@@ -44,7 +44,7 @@ export function AgendaTimeline({
       label: 'Sem primeiro retorno',
       items: fresh,
       href: '/leads?status=novo&retorno=sem_retorno',
-      color: 'bg-[#E8EFF5] text-[#365E7C]',
+      color: 'bg-info-soft text-info-foreground',
     },
   }
   const active = groups[selected]

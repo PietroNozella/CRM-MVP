@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { NotesTimeline } from '@/components/notes-timeline'
 import { LeadEditForm } from '@/components/lead-edit-form'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
 import { whatsappMessage, whatsappLink, formatPhoneBR } from '@/lib/site'
@@ -60,7 +60,7 @@ export default async function LeadDetailPage({
         <Card id="dados-contato" className="scroll-mt-4 border-t-2 border-t-primary">
         <CardHeader className="border-b">
           <p className="section-index">02 / CADASTRO</p>
-          <CardTitle className="mt-2 text-lg">Atendimento e dados do contato</CardTitle>
+          <h2 className="mt-2 text-lg font-semibold leading-none tracking-tight">Atendimento e dados do contato</h2>
         </CardHeader>
         <CardContent className="pt-5 md:pt-6">
           <LeadEditForm lead={lead} />

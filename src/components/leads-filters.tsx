@@ -24,8 +24,16 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
   const [retorno, setRetorno] = useState(initialRetorno)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState('')
-  const [expanded, setExpanded] = useState(Boolean(initialDataInicio || initialDataFim || initialStatus !== 'todos' || ['agendados', 'sem_retorno'].includes(initialRetorno)))
+  const [expanded, setExpanded] = useState(false)
   const activeCount = [initialStatus !== 'todos', Boolean(initialDataInicio), Boolean(initialDataFim), initialRetorno !== 'todos'].filter(Boolean).length
+  const statusLabel = LEAD_STATUSES.find(item => item.value === initialStatus)?.label
+  const retornoLabel = ({ agendados: 'Agendados', sem_retorno: 'Sem retorno' } as Record<string, string>)[initialRetorno]
+  const activeLabels = [
+    statusLabel && `Etapa: ${statusLabel}`,
+    retornoLabel && `Retorno: ${retornoLabel}`,
+    initialDataInicio && `Desde ${initialDataInicio.split('-').reverse().join('/')}`,
+    initialDataFim && `Até ${initialDataFim.split('-').reverse().join('/')}`,
+  ].filter(Boolean) as string[]
 
   function applyFilters(nextRetorno = retorno) {
     if (dataInicio && dataFim && dataInicio > dataFim) {
@@ -52,16 +60,21 @@ export function LeadsFilters({ initialQ = '', initialStatus = 'todos', initialDa
             <label htmlFor="busca-contatos" className="mb-2 block text-sm font-medium">Buscar contato</label>
             <Input id="busca-contatos" type="search" placeholder="Nome ou WhatsApp" maxLength={100} value={q} onChange={e => setQ(e.target.value)} />
           </div>
-          <Button type="submit" className="sm:min-w-28">{pending ? 'Buscando…' : 'Buscar'}</Button>
+          <Button type="submit" className="sm:min-w-28" loading={pending} loadingLabel="Buscando…">Buscar</Button>
         </div>
         <div className="flex flex-wrap items-center gap-2 border-t pt-4" aria-label="Filtrar por retorno">
           {[['todos', 'Todos'], ['hoje', 'Hoje'], ['atrasados', 'Atrasados']].map(([value, label]) => (
             <Button key={value} type="button" variant={initialRetorno === value ? 'secondary' : 'outline'} aria-pressed={initialRetorno === value} onClick={() => applyFilters(value)}>{label}</Button>
           ))}
           <Button type="button" variant="ghost" aria-expanded={expanded} aria-controls="filtros-avancados" onClick={() => setExpanded(!expanded)}>
-            Mais filtros{activeCount > 0 ? ' (' + activeCount + ')' : ''}
+            {expanded ? 'Ocultar filtros' : `Mais filtros${activeCount > 0 ? ` (${activeCount})` : ''}`}
           </Button>
         </div>
+        {!expanded && activeLabels.length > 0 && (
+          <div className="flex flex-wrap gap-2" aria-label="Filtros avançados ativos">
+            {activeLabels.map(label => <span key={label} className="rounded-md bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">{label}</span>)}
+          </div>
+        )}
         <div id="filtros-avancados" hidden={!expanded}>
           <div className="grid gap-4 border-t bg-secondary/35 p-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4">
             <div>

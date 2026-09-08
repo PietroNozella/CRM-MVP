@@ -1,9 +1,10 @@
 import { ImovelForm } from '@/components/imovel-form'
+import { PageHeader } from '@/components/page-header'
 
 export default function NovoImovelPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Novo Imóvel</h1>
+    <div className="max-w-4xl">
+      <PageHeader title="Novo imóvel" description="Cadastre os dados essenciais para consultar esta opção durante os atendimentos." />
       <ImovelForm />
     </div>
   )

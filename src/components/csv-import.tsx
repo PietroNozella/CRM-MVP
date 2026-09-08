@@ -314,11 +314,9 @@ export function CsvImport() {
           </div>
 
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          {result && <p role="status" className="text-sm text-green-700">{result}</p>}
-          <Button onClick={onImport} disabled={!canImport || importing} className="min-h-11">
-            {importing
-              ? `Importando...`
-              : `Importar ${validCount} contato${validCount === 1 ? '' : 's'}`}
+          {result && <p role="status" className="text-sm text-success">{result}</p>}
+          <Button onClick={onImport} disabled={!canImport} loading={importing} loadingLabel="Importando…" className="min-h-11">
+            Importar {validCount} contato{validCount === 1 ? '' : 's'}
           </Button>
           {!canImport && (
             <p className="text-xs text-muted-foreground">

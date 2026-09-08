@@ -3,6 +3,7 @@ import { ImoveisTable } from '@/components/imoveis-table'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
+import { PageHeader } from '@/components/page-header'
 
 export default async function ImoveisPage() {
   const supabase = await createClient()
@@ -15,15 +16,16 @@ export default async function ImoveisPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Imóveis</h1>
-        <Button asChild>
+      <PageHeader
+        title="Imóveis"
+        description="Organize as opções disponíveis e encontre rapidamente o imóvel certo para cada contato."
+        actions={<Button asChild>
           <Link href="/imoveis/novo">
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Imóvel
+            <Plus aria-hidden="true" />
+            Novo imóvel
           </Link>
-        </Button>
-      </div>
+        </Button>}
+      />
       <ImoveisTable imoveis={imoveis ?? []} />
     </div>
   )

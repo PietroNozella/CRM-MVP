@@ -70,8 +70,8 @@ export function NotesTimeline({
           placeholder="Ex: voltar segunda de manhã com o orçamento"
           className="w-full scroll-mt-4 rounded-md border border-input bg-background p-3 text-base focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         />
-        <Button type="submit" disabled={saving || !texto.trim()} className="min-h-11">
-          {saving ? 'Salvando anotação…' : 'Salvar anotação'}
+        <Button type="submit" disabled={!texto.trim()} loading={saving} loadingLabel="Salvando anotação…" className="min-h-11">
+          Salvar anotação
         </Button>
       </form>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}

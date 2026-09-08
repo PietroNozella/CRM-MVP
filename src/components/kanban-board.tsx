@@ -127,7 +127,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                 {board[s.value].length}
               </span>
             </div>
-            <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-border" role="img" aria-label={`${board[s.value].length} de ${initialLeads.length} contatos nesta etapa`}><div className={`h-full rounded-full ${stageIndex === 0 ? 'bg-[#78A890]' : stageIndex === 1 ? 'bg-[#5986A6]' : stageIndex === 2 ? 'bg-[#CC9950]' : 'bg-[#205D49]'}`} style={{ width: `${initialLeads.length ? board[s.value].length / initialLeads.length * 100 : 0}%` }} /></div>
+            <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-border" role="img" aria-label={`${board[s.value].length} de ${initialLeads.length} contatos nesta etapa`}><div className={`h-full rounded-full ${stageIndex === 0 ? 'bg-pipeline-new' : stageIndex === 1 ? 'bg-pipeline-active' : stageIndex === 2 ? 'bg-pipeline-negotiation' : 'bg-pipeline-closed'}`} style={{ width: `${initialLeads.length ? board[s.value].length / initialLeads.length * 100 : 0}%` }} /></div>
             <div className="space-y-2 min-h-10">
               {board[s.value].map((lead) => (
                 <Card
@@ -141,7 +141,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                 >
                   <CardContent className="p-3 md:p-3">
                     <div className="mb-2 flex items-center gap-2.5">
-                    <ContactAvatar name={lead.nome} className="size-8 text-[10px]" />
+                    <ContactAvatar name={lead.nome} className="size-8 text-[0.6875rem]" />
                     <Link
                       href={`/leads/${lead.id}`}
                       className="block break-words text-sm font-semibold hover:underline"

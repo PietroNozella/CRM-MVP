@@ -15,13 +15,13 @@ import {
 import { cn } from '@/lib/utils'
 
 const STATUS_BADGE_CLASSES: Record<LeadStatus, string> = {
-  novo: 'border-[#A7C7B6] bg-[#E1EEE6] text-[#244C3D]',
+  novo: 'border-pipeline-new-border bg-pipeline-new-soft text-pipeline-new-foreground',
   em_atendimento:
-    'border-[#ADC7D8] bg-[#E3EEF4] text-[#274E69]',
+    'border-pipeline-active-border bg-pipeline-active-soft text-pipeline-active-foreground',
   em_negociacao:
-    'border-[#DAB98B] bg-[#F3E8D3] text-[#7A4A12]',
+    'border-pipeline-negotiation-border bg-pipeline-negotiation-soft text-pipeline-negotiation-foreground',
   fechado:
-    'border-[#ABCABD] bg-[#DDEDE5] text-[#205D49]',
+    'border-pipeline-closed-border bg-pipeline-closed-soft text-pipeline-closed-foreground',
 }
 
 export function StatusBadgeSelect({

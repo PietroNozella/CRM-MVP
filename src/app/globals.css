@@ -20,6 +20,8 @@
     --accent-foreground: 130 13% 11%;
     --destructive: 6 57% 44%;
     --destructive-foreground: 40 33% 97%;
+    --success: 145 63% 32%;
+    --success-foreground: 140 14% 96%;
     --border: 140 12% 88%;
     --input: 140 10% 78%;
     --ring: 155 36% 22%;
@@ -28,6 +30,35 @@
     --chart-3: 207 49% 36%;
     --chart-4: 34 73% 41%;
     --chart-5: 126 8% 38%;
+    --brand-deep: 157 30% 14%;
+    --brand-cream: 43 33% 94%;
+    --brand-orange: 14 79% 54%;
+    --pipeline-new: 150 22% 57%;
+    --pipeline-new-soft: 143 28% 91%;
+    --pipeline-new-foreground: 158 36% 22%;
+    --pipeline-new-border: 148 22% 72%;
+    --pipeline-active: 205 30% 50%;
+    --pipeline-active-soft: 201 44% 92%;
+    --pipeline-active-foreground: 205 46% 28%;
+    --pipeline-active-border: 204 36% 76%;
+    --pipeline-negotiation: 35 55% 56%;
+    --pipeline-negotiation-soft: 39 57% 89%;
+    --pipeline-negotiation-foreground: 32 74% 28%;
+    --pipeline-negotiation-border: 35 52% 70%;
+    --pipeline-closed: 160 49% 25%;
+    --pipeline-closed-soft: 150 31% 90%;
+    --pipeline-closed-foreground: 160 49% 25%;
+    --pipeline-closed-border: 155 23% 73%;
+    --pipeline-neutral: 150 3% 57%;
+    --info-soft: 208 39% 94%;
+    --info-foreground: 206 39% 35%;
+    --overdue-on-dark: 10 100% 83%;
+    --duration-fast: 120ms;
+    --duration-standard: 180ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
+    --shadow-panel: 0 3px 16px rgb(24 32 27 / 0.025);
+    --shadow-floating: 0 12px 32px rgb(24 32 27 / 0.045);
     --radius: 0.875rem;
   }
 
@@ -61,7 +92,7 @@
 
   .technical-panel {
     @apply border border-border bg-card;
-    box-shadow: 0 12px 32px rgb(24 32 27 / 0.045);
+    box-shadow: var(--shadow-floating);
   }
 
   .section-index {
@@ -74,7 +105,7 @@
 
   .dashboard-panel {
     @apply min-w-0 rounded-2xl border border-border/70 bg-card p-5 md:p-6;
-    box-shadow: 0 3px 16px rgb(24 32 27 / 0.025);
+    box-shadow: var(--shadow-panel);
   }
 
   .panel-title {

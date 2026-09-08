@@ -161,7 +161,7 @@ export function DashboardOverview({
               />
             ))}
           </div>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[0.6875rem] text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <i className="size-1.5 rounded-full bg-destructive" />
               {overdue.length} atrasados

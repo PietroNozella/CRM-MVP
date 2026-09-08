@@ -225,8 +225,8 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
           </p>
         )}
         <p role="status" className="col-span-full font-mono text-xs text-muted-foreground">{form.formState.isSubmitting ? 'Salvando…' : form.formState.isDirty ? 'Alterações não salvas' : saved ? 'Alterações salvas.' : ''}</p>
-        <Button type="submit" className="col-span-full sm:w-fit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
-          {form.formState.isSubmitting ? 'Salvando…' : 'Salvar alterações'}
+        <Button type="submit" className="col-span-full sm:w-fit" disabled={!form.formState.isDirty} loading={form.formState.isSubmitting} loadingLabel="Salvando…">
+          Salvar alterações
         </Button>
         </fieldset>
       </form>

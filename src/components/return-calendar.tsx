@@ -181,13 +181,13 @@ export function ReturnCalendar({
       <div className="relative mt-5 pl-5">
         <span
           aria-hidden="true"
-          className="absolute left-0 top-0 text-[9px] tabular-nums text-muted-foreground"
+          className="absolute left-0 top-0 text-[0.6875rem] tabular-nums text-muted-foreground"
         >
           {maxActivity}
         </span>
         <span
           aria-hidden="true"
-          className="absolute bottom-6 left-0 text-[9px] text-muted-foreground"
+          className="absolute bottom-6 left-0 text-[0.6875rem] text-muted-foreground"
         >
           0
         </span>
@@ -227,7 +227,7 @@ export function ReturnCalendar({
                   />
                 </div>
               </div>
-              <span className="mt-2 block h-4 text-center text-[9px] tabular-nums text-muted-foreground">
+              <span className="mt-2 block h-4 text-center text-[0.6875rem] tabular-nums text-muted-foreground">
                 {day.number === 1 ||
                 day.number % 5 === 0 ||
                 day.number === daysInMonth
@@ -271,7 +271,7 @@ export function ReturnCalendar({
             {WEEK.map((day) => (
               <span
                 key={day}
-                className="pb-2 text-[10px] font-medium text-muted-foreground"
+                className="pb-2 text-[0.6875rem] font-medium text-muted-foreground"
               >
                 {day}
               </span>
@@ -317,11 +317,11 @@ export function ReturnCalendar({
                         'size-1 rounded-full',
                         day.iso < today
                           ? selected === day.iso
-                            ? 'bg-[#FFB8AA]'
+                            ? 'bg-[hsl(var(--overdue-on-dark))]'
                             : 'bg-destructive'
                           : selected === day.iso
                             ? 'bg-white'
-                            : 'bg-[#5986A6]',
+                            : 'bg-pipeline-active',
                       )}
                     />
                   )}
@@ -329,13 +329,13 @@ export function ReturnCalendar({
               </button>
             ))}
           </div>
-          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-[10px] text-muted-foreground">
+          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-[0.6875rem] text-muted-foreground">
             <span className="flex items-center gap-1">
               <i className="size-1.5 rounded-full bg-primary" />
               Registro
             </span>
             <span className="flex items-center gap-1">
-              <i className="size-1.5 rounded-full bg-[#5986A6]" />
+              <i className="size-1.5 rounded-full bg-pipeline-active" />
               Retorno
             </span>
             <span className="flex items-center gap-1">
@@ -351,7 +351,7 @@ export function ReturnCalendar({
           <h3 className="text-sm font-semibold" aria-live="polite">
             {dayLabel.format(new Date(`${selected}T12:00:00Z`))}
             {selected === today && (
-              <span className="ml-2 text-[10px] font-medium text-primary">
+              <span className="ml-2 text-[0.6875rem] font-medium text-primary">
                 HOJE
               </span>
             )}
@@ -437,7 +437,7 @@ export function ReturnCalendar({
                       <Icon aria-hidden="true" className="size-3.5" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="mb-1 flex flex-wrap items-center gap-x-2 text-[10px] text-muted-foreground">
+                      <div className="mb-1 flex flex-wrap items-center gap-x-2 text-[0.6875rem] text-muted-foreground">
                         <span>
                           {event.kind === 'note'
                             ? 'Anotação'

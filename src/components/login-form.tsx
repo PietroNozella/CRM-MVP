@@ -37,11 +37,11 @@ export function LoginForm() {
 
   return (
     <div className="grid min-h-[calc(100svh-3rem)] overflow-hidden rounded-lg border bg-card md:min-h-[calc(100svh-4rem)] lg:grid-cols-[1.15fr_0.85fr]">
-      <section className="relative hidden min-h-[34rem] overflow-hidden bg-[#18201B] p-10 text-[#F4F1E9] lg:flex lg:flex-col lg:justify-between xl:p-14">
+      <section className="relative hidden min-h-[34rem] overflow-hidden bg-brand-deep p-10 text-brand-cream lg:flex lg:flex-col lg:justify-between xl:p-14">
         <Brand className="relative z-10" />
         <div aria-hidden="true" className="absolute bottom-0 right-8 top-0 w-px bg-white/15">
-          <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[#E65A2F]" />
-          <span className="absolute bottom-14 left-1/2 -translate-x-1/2"><PrumoMark className="h-16 w-16 text-[#E65A2F]" /></span>
+          <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-brand-orange" />
+          <span className="absolute bottom-14 left-1/2 -translate-x-1/2"><PrumoMark className="h-16 w-16 text-brand-orange" /></span>
         </div>
         <div className="relative z-10 max-w-md py-8 pr-4">
           <p className="font-mono text-xs uppercase tracking-[0.1em] text-white/65">Sistema de relacionamento</p>
@@ -86,8 +86,8 @@ export function LoginForm() {
               <Button type="button" variant="link" aria-pressed={showPassword} aria-controls="login-password" onClick={() => setShowPassword(!showPassword)} className="mt-1 min-h-11 px-0 text-sm">{showPassword ? 'Ocultar senha' : 'Mostrar senha'}</Button>
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Entrando...' : 'Entrar'}
+            <Button type="submit" className="w-full" loading={loading} loadingLabel="Entrando…">
+              Entrar
             </Button>
           </form>
         </div>

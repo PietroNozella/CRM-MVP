@@ -122,8 +122,8 @@ export function LeadForm() {
               <FormItem><FormLabel>Nota do retorno (opcional)</FormLabel><FormControl><Input {...field} placeholder="Ex: Confirmar orçamento" /></FormControl><FormMessage /></FormItem>
             )} />
             {form.formState.errors.root && <p role="alert" className="text-sm text-destructive">{form.formState.errors.root.message}</p>}
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? 'Salvando...' : 'Salvar contato'}
+            <Button type="submit" className="w-full" loading={form.formState.isSubmitting} loadingLabel="Salvando…">
+              Salvar contato
             </Button>
           </div>
         </section>
