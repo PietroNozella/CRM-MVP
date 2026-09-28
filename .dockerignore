@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+output
+.playwright-cli
+.env*
+!.env.example
+*.log
+Dockerfile*
+docker-compose*.yml
+README.md

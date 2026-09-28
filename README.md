@@ -44,3 +44,25 @@ npm install
 cp .env.example .env.local  # preencha as chaves
 npm run dev
 ```
+
+## Deploy em VPS com Docker
+
+Na VPS, instale Docker + Docker Compose, clone o repositório e crie o `.env.local`
+com base no `.env.example`. Preencha todas as variáveis obrigatórias e execute:
+
+```bash
+docker compose --env-file .env.local up -d --build
+```
+
+A aplicação ficará disponível na porta `3000`. Use Nginx, Caddy ou o proxy já
+existente na VPS para publicar o domínio com HTTPS apontando para `localhost:3000`.
+
+Para atualizar:
+
+```bash
+git pull
+docker compose --env-file .env.local up -d --build
+```
+
+As variáveis `NEXT_PUBLIC_*` são incorporadas durante o build. Por isso, qualquer
+alteração nelas exige reconstruir a imagem.
