@@ -2,19 +2,20 @@
 
 PRUMO é um CRM simples (Next.js + Supabase): contatos, funil, origem, WhatsApp 1-click e webhook de captura.
 
-Modelo: **1 instalação por cliente** — cada cliente tem seu projeto Supabase + seu deploy Vercel. Sem multi-tenant.
+Modelo: **1 instalação compartilhada** — vários usuários usam o mesmo CRM, mas o
+Supabase isola contatos, anotações, funil e indicadores por usuário com RLS.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/PietroNozella/CRM-MVP)
 
-## Instalação por cliente (checklist)
+## Instalação (checklist)
 
-1. **Supabase:** crie um projeto novo → SQL Editor → rode `supabase/schema.sql` inteiro.
-2. **Auth:** Authentication → Add user → crie o login do cliente (email + senha). Em seguida desative cadastro público: Authentication → Settings → desmarque "Allow new users to sign up".
-3. **Chaves:** no Supabase, Settings → API → copie URL, `anon` e `service_role`.
-4. **Deploy:** use o botão acima ou `vercel` na pasta → cadastre as envs abaixo (Production + Preview).
-5. **Segredo webhook:** gere um hex de 32 bytes e cadastre como `LEADS_WEBHOOK_SECRET` (Vercel + `.env.local`).
-6. **LP do cliente (server-side, nunca no JS público):** backend da LP (ex: WPCode/functions.php no WordPress) manda `POST /api/webhooks/leads` com header `Authorization: Bearer <segredo>` e body `{ "name", "phone", "email?", "source?" }`.
-7. **Teste:** login → crie 1 contato manual + 1 via webhook, confira WhatsApp, follow-up e filtro por status.
+1. **Supabase:** no SQL Editor, rode `supabase/schema.sql` inteiro.
+2. **Auth:** crie os usuários em Authentication → Add user e mantenha o cadastro público desativado.
+3. **Chaves:** copie a URL pública do Supabase, a chave `anon` e a chave `service_role`.
+4. **Deploy:** configure as envs abaixo e suba a aplicação.
+5. **Webhook:** gere um token para cada usuário com o command de provisionamento.
+6. **LP do usuário (server-side, nunca no JS público):** envie `POST /api/webhooks/leads` com `Authorization: Bearer <token-do-usuario>` e body `{ "name", "phone", "email?", "source?" }`.
+7. **Teste:** valide com duas contas que nenhuma delas lê ou altera os contatos da outra.
 
 Bancos existentes (atualização, não instalação): rode os arquivos de `supabase/migrations/` na ordem de data no SQL Editor.
 
@@ -22,16 +23,66 @@ Bancos existentes (atualização, não instalação): rode os arquivos de `supab
 
 | Var | Onde | Obs |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Vercel + local | URL do projeto Supabase do cliente |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Vercel + local | anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Vercel + local (server-only) | service_role; nunca com prefixo `NEXT_PUBLIC_` |
-| `LEADS_WEBHOOK_SECRET` | Vercel + local + LP | segredo do webhook |
-| `NEXT_PUBLIC_APP_NAME` | Vercel (opcional) | nome no menu/título, padrão `PRUMO` |
-| `NEXT_PUBLIC_WHATSAPP_TEMPLATE` | Vercel (opcional) | mensagem do botão Chamar, use `{nome}` |
+| `NEXT_PUBLIC_SUPABASE_URL` | deploy + local | URL pública do Supabase; precisa ser acessível pelo navegador |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | deploy + local | anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | deploy + local (server-only) | service_role; nunca com prefixo `NEXT_PUBLIC_` |
+| `NEXT_PUBLIC_APP_NAME` | deploy (opcional) | nome no menu/título, padrão `PRUMO` |
+| `NEXT_PUBLIC_WHATSAPP_TEMPLATE` | deploy (opcional) | mensagem do botão Chamar, use `{nome}` |
 
 `NEXT_PUBLIC_*` entram no build — após mudar, faça redeploy.
 
-## Customização por cliente (sem espalhar código)
+## Usuários e isolamento
+
+- `leads.owner_id` identifica o proprietário do contato.
+- O banco preenche `owner_id` com `auth.uid()` em cadastros autenticados.
+- As políticas RLS bloqueiam leitura, criação, alteração e exclusão de dados de outro usuário.
+- As anotações são autorizadas pelo proprietário do contato relacionado.
+- O webhook usa `service_role`, então resolve o proprietário pelo token antes de inserir o contato.
+
+Não apague um usuário do Auth sem antes decidir o destino dos contatos dele. A
+chave estrangeira usa `ON DELETE RESTRICT` para impedir perda acidental dos dados.
+
+## Token de webhook por usuário
+
+No checkout local, usando as variáveis de `.env.local`:
+
+```bash
+npm run webhook:provision -- --email usuario@exemplo.com
+```
+
+Ou, dentro da imagem Docker:
+
+```bash
+docker compose --env-file .env.local run --rm app node scripts/provision-webhook-token.mjs --user-id UUID_DO_USUARIO
+```
+
+O command mostra o token uma única vez. Executá-lo novamente com o mesmo usuário
+e `label` substitui o token anterior. Para manter mais de uma origem ativa para o
+mesmo usuário, informe `--label outra-origem`.
+
+Para revogar uma origem:
+
+```bash
+npm run webhook:provision -- --email usuario@exemplo.com --label default --revoke
+```
+
+## Migração da instalação existente
+
+Antes de cadastrar o segundo usuário:
+
+1. Faça backup do banco e construa a nova imagem.
+2. Confirme que existe somente o usuário atual no Auth.
+3. Pause temporariamente a captura das landing pages.
+4. Rode `supabase/migrations/20260928_multi_user_isolation.sql`.
+5. Provisione um token para o usuário atual.
+6. Atualize o token na landing page e suba a nova imagem.
+7. Retome a captura e só então crie os demais usuários.
+
+Se já existirem vários usuários e houver contatos sem proprietário, a migration
+interrompe a transação. Nesse caso, atribua `owner_id` explicitamente antes de
+executá-la novamente.
+
+## Customização da instalação (sem espalhar código)
 
 - Marca/WhatsApp: `src/lib/site.ts` ou envs acima.
 - Tipografia: Geist local na interface e nos títulos, Geist Mono nos dados técnicos; configuração em `src/app/layout.tsx` e `tailwind.config.ts`.

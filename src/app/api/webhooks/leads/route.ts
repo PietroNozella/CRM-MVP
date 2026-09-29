@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -22,24 +23,52 @@ const captureSchema = z.object({
   source: z.string().trim().max(500).nullish(),
 })
 
-function checkAuth(request: Request): Response | null {
-  const secret = process.env.LEADS_WEBHOOK_SECRET
-  // Sem segredo a captura fica indisponivel (fail-closed, inclusive local).
-  // Dev local: defina qualquer valor no .env.local.
-  if (!secret) return jsonError('Captura indisponível', 503)
-
+function readToken(request: Request): string | null {
   const auth = request.headers.get('authorization')
-  if (auth === `Bearer ${secret}`) return null
+  const bearer = auth?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim()
+  const token = bearer || request.headers.get('x-webhook-secret')?.trim()
 
-  const fallback = request.headers.get('x-webhook-secret')
-  if (fallback === secret) return null
+  if (!token || token.length < 32 || token.length > 512) return null
+  return token
+}
 
-  return jsonError('Unauthorized', 401)
+function tokenHash(token: string) {
+  return createHash('sha256').update(token, 'utf8').digest('hex')
+}
+
+async function findOwnerId(
+  supabase: ReturnType<typeof createAdminClient>,
+  token: string,
+) {
+  const { data, error } = await supabase
+    .from('lead_webhook_tokens')
+    .select('owner_id')
+    .eq('token_hash', tokenHash(token))
+    .eq('active', true)
+    .maybeSingle()
+
+  if (error) throw error
+  return data?.owner_id ?? null
 }
 
 export async function POST(request: Request) {
-  const authError = checkAuth(request)
-  if (authError) return authError
+  const token = readToken(request)
+  if (!token) return jsonError('Unauthorized', 401)
+
+  let supabase: ReturnType<typeof createAdminClient>
+  let ownerId: string | null
+  try {
+    supabase = createAdminClient()
+    ownerId = await findOwnerId(supabase, token)
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('webhook credential lookup failed', { code: error.code })
+    } else {
+      console.error('webhook credential lookup failed')
+    }
+    return jsonError('Captura indisponível', 503)
+  }
+  if (!ownerId) return jsonError('Unauthorized', 401)
 
   let body: unknown
   try {
@@ -55,8 +84,8 @@ export async function POST(request: Request) {
   const { name, email, phone, source } = parsed.data
 
   try {
-    const supabase = createAdminClient()
     const insertData: Record<string, unknown> = {
+      owner_id: ownerId,
       nome: name,
       whatsapp: phone,
       email: email || null,
@@ -77,8 +106,12 @@ export async function POST(request: Request) {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     })
-  } catch {
-    console.error('webhook leads unexpected error')
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('webhook leads unexpected error', { code: error.code })
+    } else {
+      console.error('webhook leads unexpected error')
+    }
     return jsonError('Falha ao salvar contato', 500)
   }
 }

@@ -36,6 +36,14 @@ RUN addgroup --system --gid 1001 nodejs \
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@supabase ./node_modules/@supabase
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@types/phoenix ./node_modules/@types/phoenix
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@types/ws ./node_modules/@types/ws
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/iceberg-js ./node_modules/iceberg-js
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tslib ./node_modules/tslib
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/ws ./node_modules/ws
 
 USER nextjs
 
