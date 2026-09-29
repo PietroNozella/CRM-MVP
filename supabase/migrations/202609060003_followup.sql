@@ -1,4 +1,4 @@
-﻿-- Follow-up: proximo retorno + nota (o dono abre todo dia para ver quem chamar)
+-- Follow-up: proximo retorno + nota (o dono abre todo dia para ver quem chamar)
 -- Rode no Supabase SQL Editor (bancos existentes). Instalacoes novas ja
 -- incluem estas colunas via supabase/schema.sql.
 

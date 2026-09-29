@@ -1,4 +1,4 @@
-﻿-- Auth: fecha acesso anonimo, libera apenas usuarios logados.
+-- Auth: fecha acesso anonimo, libera apenas usuarios logados.
 -- Rode no Supabase SQL Editor DEPOIS do deploy do codigo com /login.
 -- Pre-requisito no dashboard: Authentication -> Add user (criar login do
 -- cliente) e desativar "Allow new users to sign up".

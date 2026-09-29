@@ -1,0 +1,11 @@
+# Configuração não secreta do release. Copie para .release.local.
+EASYPANEL_URL=http://IP_DA_VPS:3000
+EASYPANEL_PROJECT=nome-do-projeto
+EASYPANEL_SERVICE=nome-do-servico
+EASYPANEL_BRANCH=master
+SUPABASE_URL=https://supabase.seu-dominio.com
+SUPABASE_SERVICE_ROLE_KEY=sua-service-role-key
+
+# Não salve EASYPANEL_API_KEY neste arquivo.
+# Sem a variável no ambiente, o comando lê uma chave temporária do clipboard
+# no Windows e a revoga automaticamente ao finalizar.

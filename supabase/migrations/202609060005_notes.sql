@@ -1,4 +1,4 @@
-﻿-- Anotacoes por contato (historico: cada atendente ve o que ja foi tratado)
+-- Anotacoes por contato (historico: cada atendente ve o que ja foi tratado)
 -- Rode no Supabase SQL Editor (bancos existentes). Instalacoes novas ja
 -- incluem via supabase/schema.sql.
 

@@ -1,4 +1,4 @@
-﻿-- Validacao no banco (vale para form, CSV, webhook e PostgREST direto).
+-- Validacao no banco (vale para form, CSV, webhook e PostgREST direto).
 -- Rode no Supabase SQL Editor (bancos existentes). Instalacoes novas ja
 -- incluem via supabase/schema.sql. Confira dados existentes antes: linhas
 -- fora dos limites abaixo fazem o ADD CONSTRAINT falhar.

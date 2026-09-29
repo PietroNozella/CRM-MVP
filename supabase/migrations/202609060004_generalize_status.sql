@@ -1,4 +1,4 @@
-﻿-- Generaliza funil: visita -> em_negociacao (CRM geral, nao imobiliario)
+-- Generaliza funil: visita -> em_negociacao (CRM geral, nao imobiliario)
 -- Rode no Supabase SQL Editor ou via supabase db push.
 -- Idempotente: pode rodar em banco novo ou ja migrado.
 
@@ -13,4 +13,3 @@ ALTER TABLE leads ADD CONSTRAINT leads_status_check
   CHECK (status IN ('novo', 'em_atendimento', 'em_negociacao', 'fechado'));
 
 COMMIT;
-

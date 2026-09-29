@@ -17,7 +17,8 @@ Supabase isola contatos, anotações, funil e indicadores por usuário com RLS.
 6. **LP do usuário (server-side, nunca no JS público):** envie `POST /api/webhooks/leads` com `Authorization: Bearer <token-do-usuario>` e body `{ "name", "phone", "email?", "source?" }`.
 7. **Teste:** valide com duas contas que nenhuma delas lê ou altera os contatos da outra.
 
-Bancos existentes (atualização, não instalação): rode os arquivos de `supabase/migrations/` na ordem de data no SQL Editor.
+Bancos existentes usam o command de release descrito abaixo. Cada alteração deve
+ser um novo arquivo `supabase/migrations/<versão-numérica>_<nome>.sql`.
 
 ## Envs
 
@@ -73,7 +74,7 @@ Antes de cadastrar o segundo usuário:
 1. Faça backup do banco e construa a nova imagem.
 2. Confirme que existe somente o usuário atual no Auth.
 3. Pause temporariamente a captura das landing pages.
-4. Rode `supabase/migrations/20260928_multi_user_isolation.sql`.
+4. Rode `supabase/migrations/202609280001_multi_user_isolation.sql`.
 5. Provisione um token para o usuário atual.
 6. Atualize o token na landing page e suba a nova imagem.
 7. Retome a captura e só então crie os demais usuários.
@@ -81,6 +82,45 @@ Antes de cadastrar o segundo usuário:
 Se já existirem vários usuários e houver contatos sem proprietário, a migration
 interrompe a transação. Nesse caso, atribua `owner_id` explicitamente antes de
 executá-la novamente.
+
+## Release automatizado da VPS
+
+Configuração única:
+
+```bash
+cp .release.local.example .release.local
+npm run migrations:baseline
+```
+
+Preencha `.release.local` com os dados do EasyPanel, a URL pública do Supabase
+self-hosted e a `service_role`. O arquivo é ignorado pelo Git. O baseline registra
+as migrations que já estavam aplicadas antes da automação; não o execute em uma
+instalação vazia.
+
+Para cada alteração futura:
+
+1. Crie uma migration com versão numérica única e maior que as anteriores.
+2. Faça o commit do código; não edite migrations já aplicadas.
+3. No EasyPanel, gere e copie uma API key temporária.
+4. Execute:
+
+```bash
+npm run release:vps
+```
+
+O command exige Git limpo, roda lint e build, cria backup lógico das tabelas
+`public`, aplica somente migrations pendentes em transação, envia a branch,
+acompanha o deploy e executa smoke tests. No Windows, a chave copiada é lida do
+clipboard e revogada automaticamente ao final.
+
+Para apenas inspecionar o plano, sem alterar banco, Git ou VPS:
+
+```bash
+npm run release:vps:dry
+```
+
+Os backups ficam em schemas `migration_backup_<timestamp>`. A limpeza deles é
+manual para evitar exclusão automática de dados recuperáveis.
 
 ## Customização da instalação (sem espalhar código)
 
